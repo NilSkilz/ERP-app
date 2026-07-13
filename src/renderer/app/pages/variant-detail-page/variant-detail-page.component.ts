@@ -73,9 +73,9 @@ interface RecipeForm {
         gap: 1rem;
         margin-bottom: 1.5rem;
         padding: 1rem 1.25rem;
-        background: #131313;
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
+        background: #1b1c23;
+        border: 1px solid #2a2b34;
+        border-radius: 12px;
       }
       .meta-grid > div {
         display: flex;
@@ -84,7 +84,7 @@ interface RecipeForm {
       }
       .meta-grid label {
         font-size: 0.7rem;
-        color: #888;
+        color: #9a9fa9;
         text-transform: uppercase;
         letter-spacing: 0.06em;
         font-family: ui-monospace, 'SF Mono', Menlo, monospace;
@@ -114,14 +114,14 @@ interface RecipeForm {
         margin: 0 0 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: #888;
+        color: #9a9fa9;
         font-family: ui-monospace, 'SF Mono', Menlo, monospace;
         font-weight: 600;
       }
       .build-notes-card {
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
-        background: #131313;
+        border: 1px solid #2a2b34;
+        border-radius: 14px;
+        background: #1b1c23;
         padding: 0.75rem;
       }
       .build-notes-textarea {
@@ -132,15 +132,15 @@ interface RecipeForm {
         line-height: 1.45;
         white-space: pre-wrap;
         padding: 0.6rem 0.75rem;
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
+        border: 1px solid #2a2b34;
+        border-radius: 10px;
         resize: vertical;
-        background: #0f0f0f;
-        color: #f5f5f5;
+        background: #191a21;
+        color: #edeef2;
       }
       .build-notes-textarea:focus {
         outline: none;
-        border-color: #84cc16;
+        border-color: #f08c5a;
       }
       .build-actions {
         margin-top: 0.6rem;
@@ -163,15 +163,15 @@ interface RecipeForm {
         gap: 0.75rem;
       }
       .attachment-card {
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
-        background: #131313;
+        border: 1px solid #2a2b34;
+        border-radius: 14px;
+        background: #1b1c23;
         overflow: hidden;
         display: flex;
         flex-direction: column;
       }
       .attachment-thumb {
-        background: #0f0f0f;
+        background: #191a21;
         aspect-ratio: 4 / 3;
         display: flex;
         align-items: center;
@@ -186,7 +186,7 @@ interface RecipeForm {
       }
       .attachment-thumb .pi {
         font-size: 2.5rem;
-        color: #888;
+        color: #9a9fa9;
       }
       .attachment-meta {
         padding: 0.4rem 0.6rem;
@@ -202,7 +202,7 @@ interface RecipeForm {
         text-overflow: ellipsis;
       }
       .attachment-sub {
-        color: #888;
+        color: #9a9fa9;
         font-size: 0.72rem;
         display: flex;
         justify-content: space-between;

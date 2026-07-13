@@ -2,60 +2,96 @@
 @import 'primeflex/primeflex.css';
 
 /* ============================================================
-   Studio theme — true black + neon lime + monospace numbers.
-   Engaged via the `dark` class on <html> (see main.ts).
+   TIDE — matched to the family design system (tide.cracky.co.uk).
+   One gradient voice (coral -> rose), a warm near-black ground,
+   glassy rounded cards, and a breathing ambient glow. The app
+   was born as the cold "Studio" theme (true black + neon lime);
+   this re-skins it into the same warm family as Tide's NIGHT mode.
    PrimeNG Aura's dark variables are overridden so the whole
-   component library inherits the palette automatically.
+   component library inherits the palette automatically. Engaged
+   via the `dark` class on <html> (see main.ts).
    ============================================================ */
 :root,
 .dark {
-  /* Surfaces */
-  --p-surface-0: #131313;
-  --p-surface-50: #161616;
-  --p-surface-100: #1a1a1a;
-  --p-surface-200: #1f1f1f;
-  --p-surface-300: #262626;
-  --p-surface-400: #404040;
-  --p-surface-500: #525252;
-  --p-surface-600: #737373;
-  --p-surface-700: #a3a3a3;
-  --p-surface-800: #d4d4d4;
-  --p-surface-900: #e5e5e5;
-  --p-surface-950: #fafafa;
+  /* ---- Tide voice ---------------------------------------- */
+  --tide-coral: #f08c5a;
+  --tide-rose: #d96d8f;
+  --tide-grad: linear-gradient(90deg, #f08c5a, #d96d8f);
+  --tide-grad-135: linear-gradient(135deg, #f08c5a, #d96d8f);
 
-  /* Text */
-  --p-text-color: #f5f5f5;
-  --p-text-muted-color: #888888;
+  /* ---- Tide night grounds -------------------------------- */
+  --ground: #14151b; /* the shell ground */
+  --surface: #1b1c23; /* elevated card / panel */
+  --surface-2: #22232b; /* hover / nested */
+  --border: rgba(255, 255, 255, 0.09);
+  --hair: rgba(255, 255, 255, 0.07);
+  --ink: #edeef2;
+  --muted: #9a9fa9;
+  --faint: #7e828e;
+  --accent: #f08c5a; /* coral, the rationed accent */
+  --accent-2: #d96d8f; /* rose */
+  --accent-soft: rgba(240, 140, 90, 0.14);
+  --ok: #5fb87f; /* semantic "good / in stock" green */
+  --radius: 12px;
+  --radius-lg: 16px;
+  --glow-coral: rgba(240, 140, 90, 0.28);
+  --glow-blue: rgba(90, 140, 220, 0.22);
 
-  /* Primary (lime) */
-  --p-primary-color: #84cc16;
-  --p-primary-50: #f7fee7;
-  --p-primary-100: #ecfccb;
-  --p-primary-200: #d9f99d;
-  --p-primary-300: #bef264;
-  --p-primary-400: #a3e635;
-  --p-primary-500: #84cc16;
-  --p-primary-600: #65a30d;
-  --p-primary-700: #4d7c0f;
-  --p-primary-800: #3f6212;
-  --p-primary-900: #365314;
-  --p-primary-950: #1a2410;
-  --p-primary-contrast-color: #0a0a0a;
+  /* ---- PrimeNG surfaces (warm near-black ramp) ----------- */
+  --p-surface-0: #14151b;
+  --p-surface-50: #191a21;
+  --p-surface-100: #1e1f27;
+  --p-surface-200: #24252e;
+  --p-surface-300: #2b2c36;
+  --p-surface-400: #3a3b47;
+  --p-surface-500: #52535f;
+  --p-surface-600: #71727e;
+  --p-surface-700: #9a9fa9;
+  --p-surface-800: #c9ccd3;
+  --p-surface-900: #edeef2;
+  --p-surface-950: #f7f8fa;
 
-  /* Content + borders */
-  --p-content-background: #131313;
-  --p-content-hover-background: #1a1a1a;
-  --p-content-border-color: #262626;
-  --p-content-color: #f5f5f5;
+  /* ---- Text ---------------------------------------------- */
+  --p-text-color: #edeef2;
+  --p-text-muted-color: #9a9fa9;
 
-  /* Status colours */
-  --p-red-500: #f43f5e;
-  --p-red-600: #f43f5e;
-  --p-red-700: #fb7185;
-  --p-amber-500: #facc15;
-  --p-amber-700: #fde047;
-  --p-green-500: #84cc16;
-  --p-green-700: #a3e635;
+  /* ---- Primary (coral -> rose ramp) ---------------------- */
+  --p-primary-color: #f08c5a;
+  --p-primary-50: #fdf1ea;
+  --p-primary-100: #fbe0d2;
+  --p-primary-200: #f7c2a8;
+  --p-primary-300: #f3a37e;
+  --p-primary-400: #f19468;
+  --p-primary-500: #f08c5a;
+  --p-primary-600: #e06f4a;
+  --p-primary-700: #c25a3c;
+  --p-primary-800: #9c4831;
+  --p-primary-900: #7a3827;
+  --p-primary-950: #431d14;
+  --p-primary-contrast-color: #ffffff;
+
+  /* ---- Content + borders --------------------------------- */
+  --p-content-background: #1b1c23;
+  --p-content-hover-background: #22232b;
+  --p-content-border-color: rgba(255, 255, 255, 0.09);
+  --p-content-color: #edeef2;
+  --p-content-border-radius: 12px;
+
+  /* Rounder chrome, matched to Tide's soft radii. */
+  --p-border-radius-xs: 6px;
+  --p-border-radius-sm: 8px;
+  --p-border-radius-md: 10px;
+  --p-border-radius-lg: 14px;
+  --p-border-radius-xl: 18px;
+
+  /* ---- Status colours (warmed to sit beside coral) ------- */
+  --p-red-500: #f26d7d;
+  --p-red-600: #f26d7d;
+  --p-red-700: #f78d99;
+  --p-amber-500: #ecb44e;
+  --p-amber-700: #f2c672;
+  --p-green-500: #5fb87f;
+  --p-green-700: #7cc897;
 }
 
 html,
@@ -63,12 +99,13 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background: #0a0a0a;
-  color: #f5f5f5;
+  background: var(--ground);
+  color: var(--ink);
   font-family:
     'Inter',
-    system-ui,
     -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
     'Segoe UI',
     Roboto,
     sans-serif;
@@ -78,6 +115,14 @@ body {
 app-root {
   display: block;
   height: 100%;
+}
+
+/* The gradient voice: paint text with the Tide coral->rose gradient. */
+.tide-grad-text {
+  background: var(--tide-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Monospace numerics — applied opt-in via the .mono class on values
@@ -93,18 +138,50 @@ app-root {
   font-variant-numeric: tabular-nums;
 }
 
-/* Scrollbar — subtle dark to match Studio aesthetic. */
+/* Small caps label, matched to Tide's .tide-lbl. */
+.tide-lbl {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---- Primary action buttons wear the gradient ------------
+   Only the default (primary) PrimeNG button; severity buttons
+   (danger/success/etc.) and outlined/text variants keep their
+   own colours so status meaning survives. */
+.p-button:not(.p-button-secondary):not(.p-button-success):not(.p-button-info):not(
+    .p-button-warn
+  ):not(.p-button-help):not(.p-button-danger):not(.p-button-contrast):not(
+    .p-button-outlined
+  ):not(.p-button-text):not(.p-button-link) {
+  background: var(--tide-grad-135);
+  border: none;
+  color: #fff;
+}
+.p-button:not(.p-button-secondary):not(.p-button-success):not(.p-button-info):not(
+    .p-button-warn
+  ):not(.p-button-help):not(.p-button-danger):not(.p-button-contrast):not(
+    .p-button-outlined
+  ):not(.p-button-text):not(.p-button-link):enabled:hover {
+  background: var(--tide-grad-135);
+  filter: brightness(1.06);
+  border: none;
+}
+
+/* Scrollbar — warm, follows the coral accent on hover. */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #262626;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #404040;
+  background: var(--tide-coral);
 }

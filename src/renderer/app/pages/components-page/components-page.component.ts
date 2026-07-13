@@ -148,12 +148,12 @@ interface AdjustForm {
         width: 2rem;
         height: 2rem;
         border-radius: 6px;
-        color: var(--p-text-color, #374151);
+        color: var(--p-text-color, #edeef2);
         text-decoration: none;
       }
       .link-btn:hover {
-        background: var(--p-surface-100, #f4f4f4);
-        color: var(--p-primary-color, #2563eb);
+        background: var(--p-surface-100, #edeef2);
+        color: var(--p-primary-color, #f08c5a);
       }
     `,
   ],

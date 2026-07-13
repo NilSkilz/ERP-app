@@ -68,7 +68,7 @@ type Preview = Awaited<ReturnType<typeof trpc.batches.preview.query>>;
         gap: 1rem;
         margin-bottom: 1.25rem;
         padding: 1rem 1.25rem;
-        background: var(--p-surface-50, #fafafa);
+        background: var(--p-surface-50, #f7f8fa);
         border-radius: 8px;
       }
       .summary > div {
@@ -79,7 +79,7 @@ type Preview = Awaited<ReturnType<typeof trpc.batches.preview.query>>;
         font-size: 0.7rem;
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        color: var(--p-text-muted-color, #6b7280);
+        color: var(--p-text-muted-color, #9a9fa9);
       }
       .summary strong {
         font-size: 1.15rem;

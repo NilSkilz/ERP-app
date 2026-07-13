@@ -99,9 +99,9 @@ interface VariantAdjustForm {
         gap: 0.5rem;
       }
       .product-card {
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
-        background: #131313;
+        border: 1px solid #2a2b34;
+        border-radius: 14px;
+        background: #1b1c23;
         overflow: hidden;
       }
       .product-row {
@@ -115,7 +115,7 @@ interface VariantAdjustForm {
         font-weight: 600;
       }
       .product-sub {
-        color: #888;
+        color: #9a9fa9;
       }
       .product-actions {
         display: flex;
@@ -124,19 +124,19 @@ interface VariantAdjustForm {
       }
       .product-body {
         padding: 0.75rem 1rem 1rem 2.25rem;
-        background: #0f0f0f;
-        border-top: 1px solid #1f1f1f;
+        background: #191a21;
+        border-top: 1px solid #2a2b34;
       }
       .chevron-btn {
         background: transparent;
         border: none;
         cursor: pointer;
         padding: 0.4rem 0.5rem;
-        border-radius: 4px;
+        border-radius: 10px;
         color: inherit;
       }
       .chevron-btn:hover {
-        background: #1f1f1f;
+        background: #2a2b34;
       }
     `,
   ],
@@ -183,7 +183,7 @@ export class ProductsPageComponent implements OnInit {
     const target = variant.target_stock;
     if (target == null || target <= 0) return '';
     const stock = variant.stock_quantity;
-    if (stock >= target) return '#84cc16'; // ok
+    if (stock >= target) return '#5fb87f'; // ok
     if (stock >= target * 0.5) return '#facc15'; // low
     return '#f43f5e'; // needed
   }

@@ -52,10 +52,10 @@ const REASON_SEVERITY: Record<string, string> = {
         margin-bottom: 1.5rem;
       }
       .kpi {
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
+        border: 1px solid #2a2b34;
+        border-radius: 14px;
         padding: 0.95rem 1.05rem;
-        background: #131313;
+        background: #1b1c23;
         display: flex;
         flex-direction: column;
         gap: 0.25rem;
@@ -64,7 +64,7 @@ const REASON_SEVERITY: Record<string, string> = {
         font-size: 0.7rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: #888;
+        color: #9a9fa9;
         font-family:
           ui-monospace,
           'SF Mono',
@@ -84,7 +84,7 @@ const REASON_SEVERITY: Record<string, string> = {
       }
       .kpi-sub {
         font-size: 0.78rem;
-        color: #888;
+        color: #9a9fa9;
         font-family:
           ui-monospace,
           'SF Mono',
@@ -102,9 +102,9 @@ const REASON_SEVERITY: Record<string, string> = {
         }
       }
       .panel {
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
-        background: #131313;
+        border: 1px solid #2a2b34;
+        border-radius: 14px;
+        background: #1b1c23;
         padding: 1rem 1.15rem;
       }
       .panel h2 {
@@ -112,7 +112,7 @@ const REASON_SEVERITY: Record<string, string> = {
         margin: 0 0 0.6rem;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: #888;
+        color: #9a9fa9;
         font-family:
           ui-monospace,
           'SF Mono',
@@ -131,12 +131,12 @@ const REASON_SEVERITY: Record<string, string> = {
         gap: 0.5rem;
         padding: 0.4rem 0.5rem;
         border-radius: 6px;
-        background: #1a1a1a;
+        background: #22232b;
         align-items: center;
         font-size: 0.9rem;
       }
       .alert-item a {
-        color: var(--p-primary-color, #2563eb);
+        color: var(--p-primary-color, #f08c5a);
         text-decoration: none;
       }
       .alert-item a:hover {
@@ -144,7 +144,7 @@ const REASON_SEVERITY: Record<string, string> = {
       }
       .alert-empty {
         font-size: 0.85rem;
-        color: var(--p-text-muted-color, #6b7280);
+        color: var(--p-text-muted-color, #9a9fa9);
         font-style: italic;
       }
       .activity-row {
@@ -153,14 +153,14 @@ const REASON_SEVERITY: Record<string, string> = {
         gap: 0.5rem;
         align-items: center;
         padding: 0.35rem 0.25rem;
-        border-bottom: 1px solid var(--p-surface-100, #f1f1f1);
+        border-bottom: 1px solid var(--p-surface-100, #edeef2);
         font-size: 0.85rem;
       }
       .activity-row:last-child {
         border-bottom: none;
       }
       .activity-when {
-        color: var(--p-text-muted-color, #6b7280);
+        color: var(--p-text-muted-color, #9a9fa9);
         font-size: 0.75rem;
       }
       .neg {
@@ -178,7 +178,7 @@ const REASON_SEVERITY: Record<string, string> = {
         gap: 0.6rem;
         padding: 0.45rem 0.5rem;
         border-radius: 6px;
-        background: #1a1a1a;
+        background: #22232b;
         font-size: 0.88rem;
       }
       .target-dot {
@@ -187,8 +187,8 @@ const REASON_SEVERITY: Record<string, string> = {
         border-radius: 50%;
       }
       .target-dot.ok {
-        background: #84cc16;
-        box-shadow: 0 0 8px #84cc16;
+        background: #5fb87f;
+        box-shadow: 0 0 8px #5fb87f;
       }
       .target-dot.low {
         background: #facc15;
@@ -205,7 +205,7 @@ const REASON_SEVERITY: Record<string, string> = {
         text-overflow: ellipsis;
       }
       .target-sub {
-        color: var(--p-text-muted-color, #6b7280);
+        color: var(--p-text-muted-color, #9a9fa9);
         font-size: 0.75rem;
       }
       .target-numbers {
@@ -218,17 +218,17 @@ const REASON_SEVERITY: Record<string, string> = {
         font-weight: 600;
       }
       .target-need.ok {
-        color: var(--p-green-700, #15803d);
+        color: var(--p-green-700, #7cc897);
       }
       .target-need.low {
-        color: var(--p-amber-700, #b45309);
+        color: var(--p-amber-700, #f2c672);
       }
       .target-need.needed {
         color: var(--p-red-700, #b91c1c);
       }
       .target-stock-line {
         font-size: 0.72rem;
-        color: var(--p-text-muted-color, #6b7280);
+        color: var(--p-text-muted-color, #9a9fa9);
       }
 
       /* --- Mobile (≤767px): stack everything that's too wide for narrow screens --- */
@@ -278,9 +278,9 @@ const REASON_SEVERITY: Record<string, string> = {
         margin: 0 0 1rem;
       }
       .shopping-panel {
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
-        background: #131313;
+        border: 1px solid #2a2b34;
+        border-radius: 14px;
+        background: #1b1c23;
         padding: 1rem 1.15rem;
       }
       .shopping-header {
@@ -294,7 +294,7 @@ const REASON_SEVERITY: Record<string, string> = {
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: #888;
+        color: #9a9fa9;
         font-family:
           ui-monospace,
           'SF Mono',
@@ -313,10 +313,10 @@ const REASON_SEVERITY: Record<string, string> = {
       }
       .shopping-header .total {
         font-size: 0.85rem;
-        color: var(--p-text-muted-color, #6b7280);
+        color: var(--p-text-muted-color, #9a9fa9);
       }
       .shopping-header .total strong {
-        color: var(--p-text-color, #111827);
+        color: var(--p-text-color, #edeef2);
         font-weight: 600;
       }
       .shopping-row {
@@ -325,7 +325,7 @@ const REASON_SEVERITY: Record<string, string> = {
         gap: 0.6rem;
         align-items: center;
         padding: 0.5rem 0.25rem;
-        border-bottom: 1px solid var(--p-surface-100, #f1f1f1);
+        border-bottom: 1px solid var(--p-surface-100, #edeef2);
         font-size: 0.88rem;
       }
       .shopping-row:last-child {
@@ -336,21 +336,21 @@ const REASON_SEVERITY: Record<string, string> = {
       }
       .shopping-meta {
         font-size: 0.72rem;
-        color: var(--p-text-muted-color, #6b7280);
+        color: var(--p-text-muted-color, #9a9fa9);
       }
       .shopping-buy {
         font-weight: 600;
       }
       .shopping-packs {
         font-size: 0.72rem;
-        color: var(--p-text-muted-color, #6b7280);
+        color: var(--p-text-muted-color, #9a9fa9);
       }
       .shopping-cost {
         text-align: right;
         font-variant-numeric: tabular-nums;
       }
       .shopping-link {
-        color: var(--p-primary-color, #2563eb);
+        color: var(--p-primary-color, #f08c5a);
         text-decoration: none;
       }
       .shopping-link:hover {
@@ -367,7 +367,7 @@ const REASON_SEVERITY: Record<string, string> = {
       }
       .panel-header a {
         font-size: 0.8rem;
-        color: var(--p-primary-color, #2563eb);
+        color: var(--p-primary-color, #f08c5a);
         text-decoration: none;
       }
     `,

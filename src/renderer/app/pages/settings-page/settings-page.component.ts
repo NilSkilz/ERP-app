@@ -84,9 +84,9 @@ import { MoneyPipe } from '../../core/money.pipe';
         margin: 0 0 1.25rem;
       }
       .card {
-        border: 1px solid #1f1f1f;
-        border-radius: 4px;
-        background: #131313;
+        border: 1px solid #2a2b34;
+        border-radius: 14px;
+        background: #1b1c23;
         padding: 1.1rem 1.25rem;
         max-width: 520px;
       }
@@ -95,7 +95,7 @@ import { MoneyPipe } from '../../core/money.pipe';
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: #888;
+        color: #9a9fa9;
         font-family:
           ui-monospace,
           'SF Mono',
@@ -104,7 +104,7 @@ import { MoneyPipe } from '../../core/money.pipe';
         font-weight: 600;
       }
       .muted {
-        color: #888;
+        color: #9a9fa9;
         font-size: 0.85rem;
         margin: 0 0 1rem;
       }
@@ -131,11 +131,11 @@ import { MoneyPipe } from '../../core/money.pipe';
       .url-list code {
         font-family: ui-monospace, 'SF Mono', Menlo, monospace;
         font-size: 0.85rem;
-        background: #0f0f0f;
+        background: #191a21;
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
-        border: 1px solid #1f1f1f;
-        color: #84cc16;
+        border: 1px solid #2a2b34;
+        color: #f08c5a;
       }
     `,
   ],
