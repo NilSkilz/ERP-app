@@ -1,0 +1,233 @@
+<div class="page-header">
+  <h1>Products</h1>
+  <p-button label="Add product" icon="pi pi-plus" (onClick)="openCreateProduct()" />
+</div>
+
+@if (loading()) {
+  <p style="padding: 1rem;">Loading…</p>
+} @else if (groups().length === 0) {
+  <p style="padding: 2rem; text-align: center;">No products yet.</p>
+} @else {
+  <div class="product-list">
+    @for (product of groups(); track product.id) {
+      <section class="product-card">
+        <header class="product-row">
+          <button type="button" class="chevron-btn" (click)="toggleRow(product)" [attr.aria-expanded]="isExpanded(product)">
+            <i
+              class="pi"
+              [class.pi-chevron-down]="isExpanded(product)"
+              [class.pi-chevron-right]="!isExpanded(product)"
+            ></i>
+          </button>
+          <div class="product-meta">
+            <div class="product-name">{{ product.name }}</div>
+            <small class="product-sub">
+              {{ product.category || '—' }} · {{ product.variants.length }} variant{{ product.variants.length === 1 ? '' : 's' }}
+            </small>
+          </div>
+          <div class="product-actions">
+            <p-button icon="pi pi-pencil" severity="secondary" text="true" size="small" (onClick)="openEditProduct(product)" />
+            <p-button icon="pi pi-trash" severity="danger" text="true" size="small" (onClick)="deleteProduct(product)" />
+          </div>
+        </header>
+
+        @if (isExpanded(product)) {
+          <div class="product-body">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem;">
+              <p-button label="Add variant" icon="pi pi-plus" severity="secondary" size="small" (onClick)="openCreateVariant(product)" />
+            </div>
+            @if (product.variants.length === 0) {
+              <em>No variants yet.</em>
+            } @else {
+              <p-table [value]="product.variants" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>SKU</th>
+                    <th>Variant</th>
+                    <th class="text-right">Stock</th>
+                    <th class="text-right">Target</th>
+                    <th class="text-right">Price</th>
+                    <th class="text-right">Unit cost</th>
+                    <th class="text-right">Margin</th>
+                    <th style="width: 200px;"></th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-v>
+                  <tr>
+                    <td>{{ v.sku }}</td>
+                    <td>{{ v.variant_name }}</td>
+                    <td class="text-right">
+                      <span [style.color]="stockColor(v)">{{ v.stock_quantity }}</span>
+                    </td>
+                    <td class="text-right">
+                      @if (v.target_stock != null) {
+                        {{ v.target_stock }}
+                      } @else {
+                        <span style="color: #555;">—</span>
+                      }
+                    </td>
+                    <td class="text-right">{{ v.price_pence | money }}</td>
+                    <td class="text-right">{{ v.unit_cost_pence | money }}</td>
+                    <td class="text-right">
+                      @if (marginPct(v) != null) {
+                        {{ marginPct(v)!.toFixed(0) }}%
+                      } @else {
+                        —
+                      }
+                    </td>
+                    <td>
+                      <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
+                        <p-button label="Details" icon="pi pi-arrow-right" size="small" severity="secondary" (onClick)="openVariantDetail(v.id)" />
+                        <p-button icon="pi pi-sliders-h" severity="secondary" text="true" size="small" title="Adjust stock" (onClick)="openAdjustVariantStock(product, v)" />
+                        <p-button icon="pi pi-pencil" severity="secondary" text="true" size="small" (onClick)="openEditVariant(product, v)" />
+                        <p-button icon="pi pi-trash" severity="danger" text="true" size="small" (onClick)="deleteVariant(v)" />
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            }
+          </div>
+        }
+      </section>
+    }
+  </div>
+}
+
+<p-confirmDialog />
+
+<!-- Adjust variant stock dialog -->
+<p-dialog
+  header="Adjust variant stock"
+  [(visible)]="variantStockOpen"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+  [draggable]="false"
+>
+  @if (variantStockForm(); as f) {
+    <div class="dialog-form">
+      <div>
+        <strong>{{ f.productName }}</strong> — {{ f.variantName }}
+      </div>
+      <div style="color: var(--p-text-muted-color); font-size: 0.85rem;">
+        Current stock: {{ f.currentStock }}
+      </div>
+      <label>New stock quantity
+        <p-inputNumber [(ngModel)]="f.newStock" [min]="0" [step]="1" showButtons="true" />
+      </label>
+      <small style="color: var(--p-text-muted-color);">
+        Variants don't have an audit log yet (v0.1). Production batches and any future sales
+        will be the only entries in the stock log.
+      </small>
+    </div>
+  }
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" severity="secondary" text="true" (onClick)="variantStockOpen.set(false)" />
+    <p-button label="Save" icon="pi pi-check" (onClick)="submitAdjustVariantStock()" />
+  </ng-template>
+</p-dialog>
+
+<!-- Product dialog (create OR edit) -->
+<p-dialog
+  [header]="productForm().id == null ? 'Add product' : 'Edit product'"
+  [(visible)]="productOpen"
+  [modal]="true"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+>
+  <div class="dialog-form">
+    <label>Name
+      <input pInputText [(ngModel)]="productForm().name" />
+    </label>
+    <label>Category
+      <input pInputText [(ngModel)]="productForm().category" />
+    </label>
+    <label>Description
+      <input pInputText [(ngModel)]="productForm().description" />
+    </label>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" severity="secondary" text="true" (onClick)="productOpen.set(false)" />
+    <p-button
+      [label]="productForm().id == null ? 'Create' : 'Save'"
+      icon="pi pi-check"
+      (onClick)="submitProduct()"
+    />
+  </ng-template>
+</p-dialog>
+
+<!-- Variant dialog (create OR edit) -->
+<p-dialog
+  [header]="(variantForm()?.id ?? null) == null ? 'Add variant' : 'Edit variant'"
+  [(visible)]="variantOpen"
+  [modal]="true"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+>
+  @if (variantForm(); as f) {
+    <div class="dialog-form">
+      <div>For <strong>{{ f.productName }}</strong></div>
+      <label>Variant name
+        <input pInputText [(ngModel)]="f.variantName" />
+      </label>
+      <label>
+        SKU
+        @if (f.id == null) {
+          <small style="font-weight: 400; color: var(--p-text-muted-color);">
+            — leave blank for the next number (0001, 0002, …)
+          </small>
+        }
+        <input
+          pInputText
+          [(ngModel)]="f.sku"
+          [placeholder]="f.id == null ? 'auto' : ''"
+        />
+      </label>
+      <label>Price (£)
+        <p-inputNumber
+          [(ngModel)]="f.pricePounds"
+          mode="currency"
+          currency="GBP"
+          locale="en-GB"
+        />
+      </label>
+      <label>
+        Target stock (optional)
+        <small style="font-weight: 400; color: var(--p-text-muted-color);">
+          — how many you want to keep on hand
+        </small>
+        <p-inputNumber
+          [(ngModel)]="f.targetStock"
+          [min]="0"
+          [step]="1"
+          placeholder="e.g. 10"
+        />
+      </label>
+      <label>
+        Labour hours per unit (optional)
+        <small style="font-weight: 400; color: var(--p-text-muted-color);">
+          — combined with the global £/hr in Settings
+        </small>
+        <p-inputNumber
+          [(ngModel)]="f.labourHoursPerUnit"
+          mode="decimal"
+          [min]="0"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="2"
+          placeholder="e.g. 0.5"
+        />
+      </label>
+      <label>Notes
+        <input pInputText [(ngModel)]="f.notes" />
+      </label>
+    </div>
+  }
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" severity="secondary" text="true" (onClick)="variantOpen.set(false)" />
+    <p-button
+      [label]="(variantForm()?.id ?? null) == null ? 'Create' : 'Save'"
+      icon="pi pi-check"
+      (onClick)="submitVariant()"
+    />
+  </ng-template>
+</p-dialog>

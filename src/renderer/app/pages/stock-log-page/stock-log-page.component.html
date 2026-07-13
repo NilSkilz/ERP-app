@@ -1,0 +1,92 @@
+<h1>Stock log</h1>
+
+<div class="filters">
+  <label>Component
+    <p-select
+      [options]="componentOptions()"
+      [ngModel]="componentId()"
+      (ngModelChange)="componentId.set($event); refresh()"
+      optionLabel="label"
+      optionValue="value"
+      [filter]="true"
+      filterBy="label"
+      appendTo="body"
+    />
+  </label>
+  <label>From
+    <p-datepicker
+      [ngModel]="from()"
+      (ngModelChange)="from.set($event); refresh()"
+      dateFormat="yy-mm-dd"
+      [showButtonBar]="true"
+      appendTo="body"
+    />
+  </label>
+  <label>To
+    <p-datepicker
+      [ngModel]="to()"
+      (ngModelChange)="to.set($event); refresh()"
+      dateFormat="yy-mm-dd"
+      [showButtonBar]="true"
+      appendTo="body"
+    />
+  </label>
+  @if (anyFilter()) {
+    <p-button
+      label="Clear"
+      icon="pi pi-times"
+      severity="secondary"
+      text="true"
+      (onClick)="clearFilters()"
+    />
+  }
+</div>
+
+<p-table
+  [value]="rows()"
+  [loading]="loading()"
+  styleClass="p-datatable-sm"
+  [paginator]="true"
+  [rows]="50"
+  [rowsPerPageOptions]="[25, 50, 100, 200]"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>When</th>
+      <th>Component</th>
+      <th>Reason</th>
+      <th class="text-right">Qty Δ</th>
+      <th class="text-right">Value Δ</th>
+      <th>Batch</th>
+      <th>Notes</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td>{{ row.occurredAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+      <td>{{ row.componentName }}</td>
+      <td><p-tag [value]="row.reason" [severity]="severity(row.reason)" /></td>
+      <td class="text-right" [class.neg]="row.quantityDelta < 0">
+        @if (row.componentUnit === 'cost_pool') {
+          —
+        } @else {
+          {{ row.quantityDelta | unitQty: row.componentUnit }}
+        }
+      </td>
+      <td class="text-right" [class.neg]="row.valueDeltaPence < 0">
+        {{ row.valueDeltaPence | money }}
+      </td>
+      <td>
+        @if (row.batchId) {
+          #{{ row.batchId }}
+        } @else {
+          —
+        }
+      </td>
+      <td>{{ row.notes || '' }}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr><td colspan="7" style="text-align: center; padding: 1.5rem;">No movements match these filters.</td></tr>
+  </ng-template>
+</p-table>

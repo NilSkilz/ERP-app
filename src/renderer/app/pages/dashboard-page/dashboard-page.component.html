@@ -1,0 +1,227 @@
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+  <h1>Dashboard</h1>
+  <p-button label="Refresh" icon="pi pi-refresh" severity="secondary" text="true" (onClick)="refresh()" [loading]="loading()" />
+</div>
+
+@if (summary(); as s) {
+  <!-- KPI tiles ------------------------------------------------------------ -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <span class="kpi-label">Total stock value</span>
+      <span class="kpi-value">{{ totalStockValue() | money }}</span>
+      <span class="kpi-sub">
+        components {{ s.components.totalValuePence | money }} ·
+        finished {{ s.variants.totalValueAtCostPence | money }}
+      </span>
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-label">Components</span>
+      <span class="kpi-value">{{ s.components.activeCount }}</span>
+      <span class="kpi-sub">
+        {{ s.components.measuredCount }} measured · {{ s.components.poolCount }} cost-pool
+      </span>
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-label">Finished goods on hand</span>
+      <span class="kpi-value">{{ s.variants.totalUnits }}</span>
+      <span class="kpi-sub">across {{ s.variants.activeCount }} variant{{ s.variants.activeCount === 1 ? '' : 's' }}</span>
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-label">Potential revenue</span>
+      <span class="kpi-value">{{ s.variants.totalValueAtRetailPence | money }}</span>
+      <span class="kpi-sub">
+        @if (potentialMargin() != null) {
+          {{ potentialMargin()!.toFixed(0) }}% margin if all sells
+        } @else {
+          set prices and recipes to see margin
+        }
+      </span>
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-label">Batches produced</span>
+      <span class="kpi-value">{{ s.batches.totalCount }}</span>
+      <span class="kpi-sub">{{ s.batches.thisMonthCount }} this month</span>
+    </div>
+
+    @if (s.targetRevenue.targetedVariantCount > 0) {
+      <div class="kpi">
+        <span class="kpi-label">Revenue at target</span>
+        <span class="kpi-value">{{ s.targetRevenue.totalRevenuePence | money }}</span>
+        <span class="kpi-sub">
+          {{ s.targetRevenue.totalProfitPence | money }} profit
+          @if (s.targetRevenue.marginPct != null) {
+            · {{ s.targetRevenue.marginPct!.toFixed(0) }}% margin
+          }
+        </span>
+        @if (s.targetRevenue.deficitRevenuePence > 0) {
+          <span class="kpi-sub">
+            +{{ s.targetRevenue.deficitRevenuePence | money }} if you make + sell the gap
+          </span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Shopping list --------------------------------------------------------- -->
+  <section class="shopping-section">
+    <div class="shopping-panel">
+      <div class="shopping-header">
+        <h2>Shopping list</h2>
+        <span class="total">
+          @if (s.shoppingList.length > 0) {
+            Estimated spend: <strong>{{ s.shoppingListTotalPence | money }}</strong>
+            <small style="color: var(--p-text-muted-color); margin-left: 0.5rem;">
+              ({{ s.shoppingList.length }} component{{ s.shoppingList.length === 1 ? '' : 's' }} short)
+            </small>
+          } @else {
+            <small style="color: var(--p-text-muted-color);">
+              {{ s.stockTargets.length === 0 ? 'Set targets on your variants to compute' : 'All stock covered — nothing to buy.' }}
+            </small>
+          }
+        </span>
+      </div>
+      @if (s.shoppingList.length > 0) {
+        @for (item of s.shoppingList; track item.componentId) {
+          <div class="shopping-row">
+            <span>
+              <span class="shopping-name">{{ item.componentName }}</span>
+              <span class="shopping-meta">
+                {{ componentLabel({ colour: item.componentColour, size: item.componentSize, unit: item.componentUnit }) }}
+              </span>
+              <div class="shopping-meta">
+                @for (drv of item.drivenBy; track drv.variantId; let isLast = $last) {
+                  for {{ drv.variantName }} (+{{ drv.deficit }}){{ isLast ? '' : ', ' }}
+                }
+              </div>
+            </span>
+            <span>
+              @if (item.componentUnit === 'cost_pool') {
+                <span class="shopping-buy">{{ item.shortfallValuePence | money }}</span>
+                <div class="shopping-packs">need {{ item.totalNeededValuePence | money }}</div>
+              } @else {
+                @if (item.packsNeeded != null) {
+                  <span class="shopping-buy">
+                    Buy {{ item.packsNeeded }} × {{ item.packSize }} pack{{ item.packsNeeded === 1 ? '' : 's' }}
+                  </span>
+                  <div class="shopping-packs">
+                    short {{ item.shortfallQty | number: '1.0-2' }} {{ item.componentUnit === 'each' ? '' : item.componentUnit }}
+                  </div>
+                } @else {
+                  <span class="shopping-buy">
+                    Buy {{ item.shortfallQty | number: '1.0-2' }} {{ item.componentUnit === 'each' ? '' : item.componentUnit }}
+                  </span>
+                }
+              }
+            </span>
+            <span class="shopping-cost">
+              {{ item.estimatedCostPence | money }}
+              <div class="shopping-packs">est. spend</div>
+            </span>
+            <span>
+              @if (item.link) {
+                <a class="shopping-link" [href]="item.link" target="_blank" rel="noopener noreferrer" title="Open buy link">
+                  <i class="pi pi-external-link"></i>
+                </a>
+              }
+            </span>
+          </div>
+        }
+      }
+    </div>
+  </section>
+
+  <!-- Two columns: alerts + recent activity --------------------------------- -->
+  <div class="panels">
+    <div class="panel">
+      <h2>Setup issues</h2>
+
+      <!-- Variants without recipe -->
+      @if (s.variants.missingRecipe.length > 0) {
+        <div style="margin-bottom: 0.75rem;">
+          <strong style="font-size: 0.8rem;">
+            Variants without a recipe ({{ s.variants.missingRecipe.length }})
+          </strong>
+          <div class="alert-list">
+            @for (v of s.variants.missingRecipe; track v.id) {
+              <div class="alert-item">
+                <a [routerLink]="['/products', v.id]">{{ v.variantName }}</a>
+                <small style="color: var(--p-text-muted-color);">{{ v.sku }}</small>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Missing cost -->
+      @if (s.components.missingCost.length > 0) {
+        <div>
+          <strong style="font-size: 0.8rem;">
+            No cost recorded ({{ s.components.missingCost.length }})
+          </strong>
+          <div class="alert-list">
+            @for (c of s.components.missingCost; track c.id) {
+              <div class="alert-item">
+                <a [routerLink]="['/components']">{{ c.name }}</a>
+                <small style="color: var(--p-text-muted-color);">({{ c.unit }})</small>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (
+        s.components.missingCost.length === 0 &&
+        s.variants.missingRecipe.length === 0
+      ) {
+        <div class="alert-empty">
+          No setup gaps. Stock alerts now live in the shopping list above.
+        </div>
+      }
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Stock vs target</h2>
+        <a [routerLink]="['/make-batch']">Make a batch →</a>
+      </div>
+      @if (s.stockTargets.length === 0) {
+        <div class="alert-empty">
+          No targets set yet. Open any variant and set its "Target stock" to track it here.
+        </div>
+      } @else {
+        <div class="target-list">
+          @for (t of s.stockTargets; track t.variantId) {
+            <a class="target-row" [routerLink]="['/products', t.variantId]" style="color: inherit; text-decoration: none;">
+              <span class="target-dot" [class.ok]="t.status === 'ok'" [class.low]="t.status === 'low'" [class.needed]="t.status === 'needed'"></span>
+              <span>
+                <div class="target-name">{{ t.productName }} - {{ t.variantName }}</div>
+                <div class="target-sub">{{ t.sku }}</div>
+              </span>
+              <span class="target-numbers">
+                @if (t.deficit > 0) {
+                  <span class="target-need" [class.ok]="t.status === 'ok'" [class.low]="t.status === 'low'" [class.needed]="t.status === 'needed'">
+                    Make {{ t.deficit }}
+                  </span>
+                } @else {
+                  <span class="target-need ok">OK</span>
+                }
+                <span class="target-stock-line">
+                  {{ t.currentStock }} / {{ t.targetStock }}
+                </span>
+              </span>
+            </a>
+          }
+        </div>
+      }
+
+    </div>
+  </div>
+} @else if (loading()) {
+  <p>Loading…</p>
+} @else {
+  <p>Couldn't load dashboard.</p>
+}

@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Craft ERP — design options</title>
+  <style>
+    :root {
+      --gallery-fg: #1f2937;
+      --gallery-muted: #6b7280;
+      --gallery-bg: #f6f7f9;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--gallery-fg);
+      background: var(--gallery-bg);
+    }
+    body { padding: 2.5rem 1.5rem 4rem; }
+    .gallery-header { max-width: 1280px; margin: 0 auto 2rem; }
+    .gallery-header h1 { font-size: 1.6rem; margin: 0 0 0.25rem; }
+    .gallery-header p { margin: 0; color: var(--gallery-muted); }
+    .gallery-section { max-width: 1280px; margin: 0 auto 3.5rem; }
+    .gallery-section .meta {
+      display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .gallery-section .meta h2 { margin: 0; font-size: 1.05rem; }
+    .gallery-section .meta .tag {
+      display: inline-block; padding: 0.15rem 0.5rem; border-radius: 99px;
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .tag.light { background: #fef3c7; color: #92400e; }
+    .tag.dark { background: #1f2937; color: #e5e7eb; }
+    .gallery-section .meta .desc { color: var(--gallery-muted); font-size: 0.9rem; }
+    .frame {
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    /* ====================================================================
+       Shared mock structure — selectors are scoped per design via the
+       outermost `.dX` class so each section is fully isolated.
+    ==================================================================== */
+
+    /* ------- Design 1: Workshop (light, warm, serif headings) ------- */
+    .d1 {
+      --bg: #faf6ef;
+      --surface: #ffffff;
+      --border: #e8dec9;
+      --text: #2b231a;
+      --muted: #8a7a64;
+      --accent: #8b3a2f;
+      --accent-soft: #f3e2dc;
+      --success: #4a7a4a;
+      --warn: #c08a1e;
+      --danger: #b14a3a;
+      display: grid; grid-template-columns: 220px 1fr;
+      background: var(--bg); color: var(--text);
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    }
+    .d1 .sidebar {
+      background: #f1eadb; border-right: 1px solid var(--border);
+      padding: 1.25rem 0.75rem; display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .d1 .brand { font-weight: 700; font-size: 1.1rem; padding: 0 0.5rem 1rem; letter-spacing: 0.01em; }
+    .d1 .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 4px; font-size: 0.95rem; color: var(--text); text-decoration: none; }
+    .d1 .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .d1 .content { padding: 1.5rem 2rem; overflow: hidden; }
+    .d1 h1 { margin: 0 0 1.25rem; font-size: 1.55rem; letter-spacing: -0.01em; }
+    .d1 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+    .d1 .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.95rem 1.05rem; }
+    .d1 .kpi-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-family: -apple-system, sans-serif; }
+    .d1 .kpi-value { font-size: 1.65rem; font-weight: 600; margin-top: 0.25rem; }
+    .d1 .kpi-sub { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+    .d1 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1rem 1.1rem; }
+    .d1 .panel h2 { margin: 0 0 0.7rem; font-size: 1rem; }
+    .d1 .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .d1 .row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem; align-items: center;
+      padding: 0.5rem 0; border-bottom: 1px dotted var(--border); font-size: 0.9rem; font-family: -apple-system, sans-serif; }
+    .d1 .row:last-child { border-bottom: none; }
+    .d1 .row .name { font-weight: 500; }
+    .d1 .row .sub { font-size: 0.75rem; color: var(--muted); }
+    .d1 .pill { font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+    .d1 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.4rem; }
+    .d1 .ok { background: var(--success); }
+    .d1 .low { background: var(--warn); }
+    .d1 .needed { background: var(--danger); }
+    .d1 .ts { color: var(--muted); font-size: 0.75rem; }
+
+    /* ------- Design 2: Editorial (light, clean, single accent) ------- */
+    .d2 {
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --border: #eef0f3;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #4f46e5;
+      --accent-soft: #eef0fe;
+      --success: #16a34a;
+      --warn: #d97706;
+      --danger: #dc2626;
+      display: grid; grid-template-columns: 220px 1fr;
+      background: var(--bg); color: var(--text);
+      font-family: "Inter", -apple-system, sans-serif;
+    }
+    .d2 .sidebar { background: #fafafb; border-right: 1px solid var(--border); padding: 1.5rem 0.75rem; }
+    .d2 .brand { font-weight: 700; font-size: 0.95rem; padding: 0 0.5rem 1.5rem; letter-spacing: -0.01em; }
+    .d2 .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 6px; font-size: 0.88rem; color: #475569; text-decoration: none; }
+    .d2 .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .d2 .content { padding: 1.75rem 2.25rem; }
+    .d2 h1 { margin: 0 0 0.25rem; font-size: 1.5rem; letter-spacing: -0.02em; }
+    .d2 .subtitle { color: var(--muted); margin: 0 0 1.5rem; font-size: 0.9rem; }
+    .d2 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 1.5rem; overflow: hidden; }
+    .d2 .kpi { padding: 1rem 1.2rem; border-right: 1px solid var(--border); }
+    .d2 .kpi:nth-child(3n) { border-right: none; }
+    .d2 .kpi:nth-child(n+4) { border-top: 1px solid var(--border); }
+    .d2 .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .d2 .kpi-value { font-size: 1.6rem; font-weight: 600; margin-top: 0.3rem; font-variant-numeric: tabular-nums; }
+    .d2 .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .d2 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.25rem; }
+    .d2 .panel h2 { margin: 0 0 0.75rem; font-size: 0.95rem; font-weight: 600; }
+    .d2 .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .d2 .row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem; align-items: center;
+      padding: 0.55rem 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+    .d2 .row:last-child { border-bottom: none; }
+    .d2 .row .sub { font-size: 0.74rem; color: var(--muted); }
+    .d2 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.45rem; vertical-align: middle; }
+    .d2 .ok { background: var(--success); }
+    .d2 .low { background: var(--warn); }
+    .d2 .needed { background: var(--danger); }
+    .d2 .pill { font-size: 0.7rem; padding: 0.12rem 0.5rem; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+    .d2 .ts { color: var(--muted); font-size: 0.74rem; }
+
+    /* ------- Design 3: Boutique soft (light, sage + blush, rounded) ------- */
+    .d3 {
+      --bg: #fbf8f4;
+      --surface: #ffffff;
+      --border: #ece6dd;
+      --text: #2d2a26;
+      --muted: #8a8278;
+      --accent: #5e7857;
+      --accent-soft: #e9efe5;
+      --success: #5e7857;
+      --warn: #c89671;
+      --danger: #c46c5b;
+      display: grid; grid-template-columns: 220px 1fr;
+      background: var(--bg); color: var(--text);
+      font-family: "Inter", -apple-system, sans-serif;
+    }
+    .d3 .sidebar { background: var(--bg); padding: 1.5rem 0.85rem; display: flex; flex-direction: column; gap: 0.3rem; }
+    .d3 .brand { font-family: "Iowan Old Style", Georgia, serif; font-size: 1.2rem; font-weight: 600; padding: 0 0.5rem 1.5rem; }
+    .d3 .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.85rem; border-radius: 12px; font-size: 0.9rem; color: var(--text); text-decoration: none; }
+    .d3 .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .d3 .content { padding: 1.75rem 2rem; }
+    .d3 h1 { margin: 0 0 1.5rem; font-family: "Iowan Old Style", Georgia, serif; font-size: 1.65rem; font-weight: 600; }
+    .d3 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+    .d3 .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem 1.2rem; }
+    .d3 .kpi-label { font-size: 0.72rem; color: var(--muted); }
+    .d3 .kpi-value { font-size: 1.55rem; font-weight: 600; margin-top: 0.2rem; font-variant-numeric: tabular-nums; }
+    .d3 .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .d3 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.2rem 1.35rem; }
+    .d3 .panel h2 { margin: 0 0 0.85rem; font-family: "Iowan Old Style", Georgia, serif; font-size: 1.05rem; font-weight: 600; }
+    .d3 .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .d3 .row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem; align-items: center;
+      padding: 0.55rem 0; font-size: 0.88rem; }
+    .d3 .row + .row { border-top: 1px solid var(--border); }
+    .d3 .row .sub { font-size: 0.74rem; color: var(--muted); }
+    .d3 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.45rem; vertical-align: middle; }
+    .d3 .ok { background: var(--success); }
+    .d3 .low { background: var(--warn); }
+    .d3 .needed { background: var(--danger); }
+    .d3 .pill { font-size: 0.7rem; padding: 0.15rem 0.6rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+    .d3 .ts { color: var(--muted); font-size: 0.74rem; }
+
+    /* ------- Design 4: Studio (dark, true-black, neon accent) ------- */
+    .d4 {
+      --bg: #0a0a0a;
+      --surface: #131313;
+      --border: #1f1f1f;
+      --text: #f5f5f5;
+      --muted: #888;
+      --accent: #84cc16;
+      --accent-soft: #1a2410;
+      --success: #84cc16;
+      --warn: #facc15;
+      --danger: #f43f5e;
+      display: grid; grid-template-columns: 220px 1fr;
+      background: var(--bg); color: var(--text);
+      font-family: "Inter", -apple-system, sans-serif;
+    }
+    .d4 .sidebar { background: #0a0a0a; border-right: 1px solid var(--border); padding: 1.5rem 0.75rem; }
+    .d4 .brand { font-weight: 700; font-size: 0.95rem; padding: 0 0.5rem 1.5rem; }
+    .d4 .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 4px; font-size: 0.88rem; color: #aaa; text-decoration: none; }
+    .d4 .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .d4 .content { padding: 1.75rem 2.25rem; }
+    .d4 h1 { margin: 0 0 1.25rem; font-size: 1.5rem; letter-spacing: -0.02em; }
+    .d4 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+    .d4 .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.95rem 1.05rem; }
+    .d4 .kpi-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+    .d4 .kpi-value { font-size: 1.65rem; font-weight: 600; margin-top: 0.25rem; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
+    .d4 .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+    .d4 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1.1rem 1.25rem; }
+    .d4 .panel h2 { margin: 0 0 0.75rem; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .d4 .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .d4 .row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem; align-items: center;
+      padding: 0.55rem 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+    .d4 .row:last-child { border-bottom: none; }
+    .d4 .row .name { font-family: "Inter", sans-serif; }
+    .d4 .row .sub { font-size: 0.74rem; color: var(--muted); }
+    .d4 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.45rem; vertical-align: middle; }
+    .d4 .ok { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .d4 .low { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+    .d4 .needed { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+    .d4 .pill { font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 2px; background: var(--accent-soft); color: var(--accent); font-family: ui-monospace, "SF Mono", monospace; }
+    .d4 .ts { color: var(--muted); font-size: 0.74rem; }
+
+    /* ------- Design 5: Workshop dark (warm dark, amber, serif) ------- */
+    .d5 {
+      --bg: #1a1612;
+      --surface: #221d17;
+      --border: #36302a;
+      --text: #f1e8d8;
+      --muted: #9a8c75;
+      --accent: #d9a86b;
+      --accent-soft: #2d251c;
+      --success: #92b369;
+      --warn: #d9a86b;
+      --danger: #c97462;
+      display: grid; grid-template-columns: 220px 1fr;
+      background: var(--bg); color: var(--text);
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    }
+    .d5 .sidebar { background: #14110d; border-right: 1px solid var(--border); padding: 1.25rem 0.75rem; }
+    .d5 .brand { font-weight: 600; font-size: 1.1rem; padding: 0 0.5rem 1rem; color: var(--accent); }
+    .d5 .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 4px; font-size: 0.95rem; color: var(--text); text-decoration: none; }
+    .d5 .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .d5 .content { padding: 1.5rem 2rem; }
+    .d5 h1 { margin: 0 0 1.25rem; font-size: 1.55rem; letter-spacing: -0.01em; }
+    .d5 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+    .d5 .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.95rem 1.05rem; }
+    .d5 .kpi-label { font-family: -apple-system, sans-serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .d5 .kpi-value { font-size: 1.6rem; font-weight: 600; margin-top: 0.25rem; }
+    .d5 .kpi-sub { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+    .d5 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1rem 1.15rem; }
+    .d5 .panel h2 { margin: 0 0 0.7rem; font-size: 1rem; color: var(--accent); }
+    .d5 .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .d5 .row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem; align-items: center;
+      padding: 0.55rem 0; border-bottom: 1px dotted var(--border); font-size: 0.9rem; font-family: -apple-system, sans-serif; }
+    .d5 .row:last-child { border-bottom: none; }
+    .d5 .row .sub { font-size: 0.75rem; color: var(--muted); }
+    .d5 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.45rem; vertical-align: middle; }
+    .d5 .ok { background: var(--success); }
+    .d5 .low { background: var(--warn); }
+    .d5 .needed { background: var(--danger); }
+    .d5 .pill { font-size: 0.7rem; padding: 0.12rem 0.55rem; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+    .d5 .ts { color: var(--muted); font-size: 0.75rem; }
+
+    /* ------- Design 6: Slate (dark, modern, sky-blue accent) ------- */
+    .d6 {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-soft: #0c4a6e;
+      --success: #4ade80;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      display: grid; grid-template-columns: 220px 1fr;
+      background: var(--bg); color: var(--text);
+      font-family: "Inter", -apple-system, sans-serif;
+    }
+    .d6 .sidebar { background: #0b1220; border-right: 1px solid var(--border); padding: 1.5rem 0.75rem; }
+    .d6 .brand { font-weight: 700; font-size: 0.95rem; padding: 0 0.5rem 1.5rem; color: var(--accent); }
+    .d6 .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 6px; font-size: 0.88rem; color: var(--muted); text-decoration: none; }
+    .d6 .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .d6 .content { padding: 1.75rem 2.25rem; }
+    .d6 h1 { margin: 0 0 0.25rem; font-size: 1.5rem; letter-spacing: -0.02em; }
+    .d6 .subtitle { color: var(--muted); margin: 0 0 1.5rem; font-size: 0.9rem; }
+    .d6 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+    .d6 .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; }
+    .d6 .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .d6 .kpi-value { font-size: 1.6rem; font-weight: 600; margin-top: 0.3rem; font-variant-numeric: tabular-nums; }
+    .d6 .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .d6 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; }
+    .d6 .panel h2 { margin: 0 0 0.75rem; font-size: 0.95rem; font-weight: 600; }
+    .d6 .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .d6 .row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem; align-items: center;
+      padding: 0.55rem 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+    .d6 .row:last-child { border-bottom: none; }
+    .d6 .row .sub { font-size: 0.74rem; color: var(--muted); }
+    .d6 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.45rem; vertical-align: middle; }
+    .d6 .ok { background: var(--success); }
+    .d6 .low { background: var(--warn); }
+    .d6 .needed { background: var(--danger); }
+    .d6 .pill { font-size: 0.7rem; padding: 0.15rem 0.55rem; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+    .d6 .ts { color: var(--muted); font-size: 0.74rem; }
+
+    .right { text-align: right; font-variant-numeric: tabular-nums; }
+    .strong { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="gallery-header">
+    <h1>Craft ERP — design options</h1>
+    <p>6 dashboard mockups. 3 light, 3 dark. Same data so the comparison is about the look, not the content.</p>
+  </div>
+
+  <!-- ============================== DESIGN 1: Workshop ================================== -->
+  <section class="gallery-section">
+    <div class="meta">
+      <span class="tag light">Light</span>
+      <h2>1. Workshop</h2>
+      <span class="desc">Warm paper, burgundy accent, serif headings. Feels like a maker's notebook.</span>
+    </div>
+    <div class="frame">
+      <div class="d1">
+        <aside class="sidebar">
+          <div class="brand">⚒ Craft ERP</div>
+          <a class="nav-item active">▣ Dashboard</a>
+          <a class="nav-item">◧ Components</a>
+          <a class="nav-item">⌂ Products</a>
+          <a class="nav-item">✦ Make a batch</a>
+          <a class="nav-item">≡ Stock log</a>
+          <a class="nav-item">⚙ Settings</a>
+        </aside>
+        <main class="content">
+          <h1>Dashboard</h1>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-label">Total stock value</div><div class="kpi-value">£487.50</div><div class="kpi-sub">components £213.40 · finished £274.10</div></div>
+            <div class="kpi"><div class="kpi-label">Components</div><div class="kpi-value">24</div><div class="kpi-sub">18 measured · 6 cost-pool</div></div>
+            <div class="kpi"><div class="kpi-label">Finished goods</div><div class="kpi-value">47</div><div class="kpi-sub">across 9 variants</div></div>
+            <div class="kpi"><div class="kpi-label">Potential revenue</div><div class="kpi-value">£1,235.00</div><div class="kpi-sub">62% margin if all sells</div></div>
+            <div class="kpi"><div class="kpi-label">Batches produced</div><div class="kpi-value">18</div><div class="kpi-sub">3 this month</div></div>
+            <div class="kpi"><div class="kpi-label">Revenue at target</div><div class="kpi-value">£3,420.00</div><div class="kpi-sub">£2,118 profit · 62% margin</div></div>
+          </div>
+          <div class="panel" style="margin-bottom: 1rem;">
+            <h2>Shopping list <span class="pill">est. spend £24.66</span></h2>
+            <div class="row"><span><span class="name">Biothane</span> <span class="sub">(Black, 20mm, m)</span></span><span>Buy 23.5 m</span><span class="right strong">£14.10</span></div>
+            <div class="row"><span><span class="name">Solid brass rivets</span> <span class="sub">(—, 8mm, each)</span></span><span>Buy 64 (1 × 100 pack)</span><span class="right strong">£8.96</span></div>
+            <div class="row"><span><span class="name">Cotton wick</span> <span class="sub">(—, 200mm, each)</span></span><span>Buy 8</span><span class="right strong">£1.60</span></div>
+          </div>
+          <div class="panels">
+            <div class="panel">
+              <h2>Stock vs target</h2>
+              <div class="row"><span><span class="dot needed"></span><span class="name">Wrist restraint — Black M</span><div class="sub" style="margin-left: 1rem;">WR-BLK-M</div></span><span class="strong" style="color: var(--danger)">Make 8</span><span class="right sub">2 / 10</span></div>
+              <div class="row"><span><span class="dot low"></span><span class="name">Hex Wallet — Tan</span><div class="sub" style="margin-left: 1rem;">HEX-WALLET-TAN</div></span><span class="strong" style="color: var(--warn)">Make 3</span><span class="right sub">4 / 7</span></div>
+              <div class="row"><span><span class="dot ok"></span><span class="name">Beeswax candle — Vanilla</span><div class="sub" style="margin-left: 1rem;">CANDLE-VAN</div></span><span class="strong" style="color: var(--success)">OK</span><span class="right sub">12 / 10</span></div>
+            </div>
+            <div class="panel">
+              <h2>Recent movements</h2>
+              <div class="row"><span class="ts">May 19 09:23</span><span class="pill">purchase</span><span><span class="name">Biothane Black</span> <span class="sub">+50 m</span></span></div>
+              <div class="row"><span class="ts">May 18 16:02</span><span class="pill">production</span><span><span class="name">Cotton wick</span> <span class="sub">−8 each</span></span></div>
+              <div class="row"><span class="ts">May 17 14:11</span><span class="pill">adjustment</span><span><span class="name">Beeswax pool</span> <span class="sub">+£180.00</span></span></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== DESIGN 2: Editorial ================================== -->
+  <section class="gallery-section">
+    <div class="meta">
+      <span class="tag light">Light</span>
+      <h2>2. Editorial</h2>
+      <span class="desc">Linear / Stripe energy. White, indigo accent, tight tabular numbers, no shadows.</span>
+    </div>
+    <div class="frame">
+      <div class="d2">
+        <aside class="sidebar">
+          <div class="brand">Craft ERP</div>
+          <a class="nav-item active">Dashboard</a>
+          <a class="nav-item">Components</a>
+          <a class="nav-item">Products</a>
+          <a class="nav-item">Make a batch</a>
+          <a class="nav-item">Stock log</a>
+          <a class="nav-item">Settings</a>
+        </aside>
+        <main class="content">
+          <h1>Dashboard</h1>
+          <p class="subtitle">Overview as of Tuesday, 21 May</p>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-label">Total stock value</div><div class="kpi-value">£487.50</div><div class="kpi-sub">components £213.40 · finished £274.10</div></div>
+            <div class="kpi"><div class="kpi-label">Components</div><div class="kpi-value">24</div><div class="kpi-sub">18 measured · 6 cost-pool</div></div>
+            <div class="kpi"><div class="kpi-label">Finished goods</div><div class="kpi-value">47</div><div class="kpi-sub">across 9 variants</div></div>
+            <div class="kpi"><div class="kpi-label">Potential revenue</div><div class="kpi-value">£1,235.00</div><div class="kpi-sub">62% margin if all sells</div></div>
+            <div class="kpi"><div class="kpi-label">Batches produced</div><div class="kpi-value">18</div><div class="kpi-sub">3 this month</div></div>
+            <div class="kpi"><div class="kpi-label">Revenue at target</div><div class="kpi-value">£3,420.00</div><div class="kpi-sub">£2,118 profit · 62% margin</div></div>
+          </div>
+          <div class="panel" style="margin-bottom: 1rem;">
+            <h2>Shopping list · <span style="font-weight: 400; color: var(--muted);">est. spend</span> £24.66</h2>
+            <div class="row"><span><span class="strong">Biothane</span> <span class="sub">Black · 20mm · m</span></span><span>Buy 23.5 m</span><span class="right strong">£14.10</span></div>
+            <div class="row"><span><span class="strong">Solid brass rivets</span> <span class="sub">8mm · each</span></span><span>Buy 64 <span class="sub">(1 × 100 pack)</span></span><span class="right strong">£8.96</span></div>
+            <div class="row"><span><span class="strong">Cotton wick</span> <span class="sub">200mm · each</span></span><span>Buy 8</span><span class="right strong">£1.60</span></div>
+          </div>
+          <div class="panels">
+            <div class="panel">
+              <h2>Stock vs target</h2>
+              <div class="row"><span><span class="dot needed"></span><span class="strong">Wrist restraint — Black M</span></span><span class="strong" style="color: var(--danger)">Make 8</span><span class="right sub">2 / 10</span></div>
+              <div class="row"><span><span class="dot low"></span><span class="strong">Hex Wallet — Tan</span></span><span class="strong" style="color: var(--warn)">Make 3</span><span class="right sub">4 / 7</span></div>
+              <div class="row"><span><span class="dot ok"></span><span class="strong">Beeswax candle — Vanilla</span></span><span class="strong" style="color: var(--success)">OK</span><span class="right sub">12 / 10</span></div>
+            </div>
+            <div class="panel">
+              <h2>Recent movements</h2>
+              <div class="row"><span class="ts">May 19 09:23</span><span class="pill">purchase</span><span><span class="strong">Biothane Black</span> <span class="sub">+50 m</span></span></div>
+              <div class="row"><span class="ts">May 18 16:02</span><span class="pill">production</span><span><span class="strong">Cotton wick</span> <span class="sub">−8 each</span></span></div>
+              <div class="row"><span class="ts">May 17 14:11</span><span class="pill">adjustment</span><span><span class="strong">Beeswax pool</span> <span class="sub">+£180</span></span></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== DESIGN 3: Boutique soft ================================== -->
+  <section class="gallery-section">
+    <div class="meta">
+      <span class="tag light">Light</span>
+      <h2>3. Boutique soft</h2>
+      <span class="desc">Pastel + sage, generous radii (16px), serif page titles. Artisan-shop website energy.</span>
+    </div>
+    <div class="frame">
+      <div class="d3">
+        <aside class="sidebar">
+          <div class="brand">Craft</div>
+          <a class="nav-item active">Dashboard</a>
+          <a class="nav-item">Components</a>
+          <a class="nav-item">Products</a>
+          <a class="nav-item">Make a batch</a>
+          <a class="nav-item">Stock log</a>
+          <a class="nav-item">Settings</a>
+        </aside>
+        <main class="content">
+          <h1>Dashboard</h1>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-label">Total stock value</div><div class="kpi-value">£487.50</div><div class="kpi-sub">components £213.40 · finished £274.10</div></div>
+            <div class="kpi"><div class="kpi-label">Components</div><div class="kpi-value">24</div><div class="kpi-sub">18 measured · 6 cost-pool</div></div>
+            <div class="kpi"><div class="kpi-label">Finished goods</div><div class="kpi-value">47</div><div class="kpi-sub">across 9 variants</div></div>
+            <div class="kpi"><div class="kpi-label">Potential revenue</div><div class="kpi-value">£1,235.00</div><div class="kpi-sub">62% margin if all sells</div></div>
+            <div class="kpi"><div class="kpi-label">Batches produced</div><div class="kpi-value">18</div><div class="kpi-sub">3 this month</div></div>
+            <div class="kpi"><div class="kpi-label">Revenue at target</div><div class="kpi-value">£3,420.00</div><div class="kpi-sub">£2,118 profit · 62% margin</div></div>
+          </div>
+          <div class="panel" style="margin-bottom: 1rem;">
+            <h2>Shopping list <span class="pill">est. spend £24.66</span></h2>
+            <div class="row"><span><span class="strong">Biothane</span> <span class="sub">Black · 20mm · m</span></span><span>Buy 23.5 m</span><span class="right strong">£14.10</span></div>
+            <div class="row"><span><span class="strong">Solid brass rivets</span> <span class="sub">8mm · each</span></span><span>Buy 64 <span class="sub">(1 × 100 pack)</span></span><span class="right strong">£8.96</span></div>
+            <div class="row"><span><span class="strong">Cotton wick</span> <span class="sub">200mm · each</span></span><span>Buy 8</span><span class="right strong">£1.60</span></div>
+          </div>
+          <div class="panels">
+            <div class="panel">
+              <h2>Stock vs target</h2>
+              <div class="row"><span><span class="dot needed"></span><span class="strong">Wrist restraint — Black M</span></span><span class="strong" style="color: var(--danger)">Make 8</span><span class="right sub">2 / 10</span></div>
+              <div class="row"><span><span class="dot low"></span><span class="strong">Hex Wallet — Tan</span></span><span class="strong" style="color: var(--warn)">Make 3</span><span class="right sub">4 / 7</span></div>
+              <div class="row"><span><span class="dot ok"></span><span class="strong">Beeswax candle — Vanilla</span></span><span class="strong" style="color: var(--success)">OK</span><span class="right sub">12 / 10</span></div>
+            </div>
+            <div class="panel">
+              <h2>Recent movements</h2>
+              <div class="row"><span class="ts">May 19 09:23</span><span class="pill">purchase</span><span><span class="strong">Biothane Black</span> <span class="sub">+50 m</span></span></div>
+              <div class="row"><span class="ts">May 18 16:02</span><span class="pill">production</span><span><span class="strong">Cotton wick</span> <span class="sub">−8 each</span></span></div>
+              <div class="row"><span class="ts">May 17 14:11</span><span class="pill">adjustment</span><span><span class="strong">Beeswax pool</span> <span class="sub">+£180</span></span></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== DESIGN 4: Studio (dark) ================================== -->
+  <section class="gallery-section">
+    <div class="meta">
+      <span class="tag dark">Dark</span>
+      <h2>4. Studio</h2>
+      <span class="desc">True-black, neon lime accent, monospace numbers, glowing status dots. Developer-tool elegance.</span>
+    </div>
+    <div class="frame">
+      <div class="d4">
+        <aside class="sidebar">
+          <div class="brand">CRAFT_ERP</div>
+          <a class="nav-item active">▣ dashboard</a>
+          <a class="nav-item">◧ components</a>
+          <a class="nav-item">⌂ products</a>
+          <a class="nav-item">✦ make-batch</a>
+          <a class="nav-item">≡ stock-log</a>
+          <a class="nav-item">⚙ settings</a>
+        </aside>
+        <main class="content">
+          <h1>Dashboard</h1>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-label">total stock</div><div class="kpi-value">£487.50</div><div class="kpi-sub">comp 213.40 · fin 274.10</div></div>
+            <div class="kpi"><div class="kpi-label">components</div><div class="kpi-value">24</div><div class="kpi-sub">measured 18 · pool 6</div></div>
+            <div class="kpi"><div class="kpi-label">finished</div><div class="kpi-value">47</div><div class="kpi-sub">across 9 variants</div></div>
+            <div class="kpi"><div class="kpi-label">potential rev</div><div class="kpi-value">£1,235</div><div class="kpi-sub">62% margin if all sells</div></div>
+            <div class="kpi"><div class="kpi-label">batches</div><div class="kpi-value">18</div><div class="kpi-sub">3 this month</div></div>
+            <div class="kpi"><div class="kpi-label">rev @ target</div><div class="kpi-value">£3,420</div><div class="kpi-sub">£2,118 profit · 62%</div></div>
+          </div>
+          <div class="panel" style="margin-bottom: 1rem;">
+            <h2>Shopping list / est. spend £24.66</h2>
+            <div class="row"><span class="name">Biothane <span class="sub">(Black, 20mm, m)</span></span><span>buy 23.5 m</span><span class="right strong">£14.10</span></div>
+            <div class="row"><span class="name">Solid brass rivets <span class="sub">(8mm, each)</span></span><span>buy 64 [1 × 100 pack]</span><span class="right strong">£8.96</span></div>
+            <div class="row"><span class="name">Cotton wick <span class="sub">(200mm, each)</span></span><span>buy 8</span><span class="right strong">£1.60</span></div>
+          </div>
+          <div class="panels">
+            <div class="panel">
+              <h2>Stock vs target</h2>
+              <div class="row"><span><span class="dot needed"></span><span class="name">Wrist restraint — Black M</span></span><span class="strong" style="color: var(--danger)">make 8</span><span class="right sub">2/10</span></div>
+              <div class="row"><span><span class="dot low"></span><span class="name">Hex Wallet — Tan</span></span><span class="strong" style="color: var(--warn)">make 3</span><span class="right sub">4/7</span></div>
+              <div class="row"><span><span class="dot ok"></span><span class="name">Beeswax candle — Vanilla</span></span><span class="strong" style="color: var(--success)">OK</span><span class="right sub">12/10</span></div>
+            </div>
+            <div class="panel">
+              <h2>Recent movements</h2>
+              <div class="row"><span class="ts">05-19 09:23</span><span class="pill">purchase</span><span><span class="name">Biothane Black</span> <span class="sub">+50 m</span></span></div>
+              <div class="row"><span class="ts">05-18 16:02</span><span class="pill">production</span><span><span class="name">Cotton wick</span> <span class="sub">−8 each</span></span></div>
+              <div class="row"><span class="ts">05-17 14:11</span><span class="pill">adjustment</span><span><span class="name">Beeswax pool</span> <span class="sub">+£180</span></span></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== DESIGN 5: Workshop dark ================================== -->
+  <section class="gallery-section">
+    <div class="meta">
+      <span class="tag dark">Dark</span>
+      <h2>5. Workshop dark</h2>
+      <span class="desc">Warm dark — soft incandescent feel. Amber accent, serif headings. Dark cousin of #1.</span>
+    </div>
+    <div class="frame">
+      <div class="d5">
+        <aside class="sidebar">
+          <div class="brand">⚒ Craft ERP</div>
+          <a class="nav-item active">Dashboard</a>
+          <a class="nav-item">Components</a>
+          <a class="nav-item">Products</a>
+          <a class="nav-item">Make a batch</a>
+          <a class="nav-item">Stock log</a>
+          <a class="nav-item">Settings</a>
+        </aside>
+        <main class="content">
+          <h1>Dashboard</h1>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-label">Total stock value</div><div class="kpi-value">£487.50</div><div class="kpi-sub">components £213.40 · finished £274.10</div></div>
+            <div class="kpi"><div class="kpi-label">Components</div><div class="kpi-value">24</div><div class="kpi-sub">18 measured · 6 cost-pool</div></div>
+            <div class="kpi"><div class="kpi-label">Finished goods</div><div class="kpi-value">47</div><div class="kpi-sub">across 9 variants</div></div>
+            <div class="kpi"><div class="kpi-label">Potential revenue</div><div class="kpi-value">£1,235.00</div><div class="kpi-sub">62% margin if all sells</div></div>
+            <div class="kpi"><div class="kpi-label">Batches produced</div><div class="kpi-value">18</div><div class="kpi-sub">3 this month</div></div>
+            <div class="kpi"><div class="kpi-label">Revenue at target</div><div class="kpi-value">£3,420.00</div><div class="kpi-sub">£2,118 profit · 62% margin</div></div>
+          </div>
+          <div class="panel" style="margin-bottom: 1rem;">
+            <h2>Shopping list <span class="pill">est. spend £24.66</span></h2>
+            <div class="row"><span><span class="strong">Biothane</span> <span class="sub">(Black, 20mm, m)</span></span><span>Buy 23.5 m</span><span class="right strong">£14.10</span></div>
+            <div class="row"><span><span class="strong">Solid brass rivets</span> <span class="sub">(8mm, each)</span></span><span>Buy 64 <span class="sub">(1 × 100 pack)</span></span><span class="right strong">£8.96</span></div>
+            <div class="row"><span><span class="strong">Cotton wick</span> <span class="sub">(200mm, each)</span></span><span>Buy 8</span><span class="right strong">£1.60</span></div>
+          </div>
+          <div class="panels">
+            <div class="panel">
+              <h2>Stock vs target</h2>
+              <div class="row"><span><span class="dot needed"></span><span class="strong">Wrist restraint — Black M</span></span><span class="strong" style="color: var(--danger)">Make 8</span><span class="right sub">2 / 10</span></div>
+              <div class="row"><span><span class="dot low"></span><span class="strong">Hex Wallet — Tan</span></span><span class="strong" style="color: var(--warn)">Make 3</span><span class="right sub">4 / 7</span></div>
+              <div class="row"><span><span class="dot ok"></span><span class="strong">Beeswax candle — Vanilla</span></span><span class="strong" style="color: var(--success)">OK</span><span class="right sub">12 / 10</span></div>
+            </div>
+            <div class="panel">
+              <h2>Recent movements</h2>
+              <div class="row"><span class="ts">May 19 09:23</span><span class="pill">purchase</span><span><span class="strong">Biothane Black</span> <span class="sub">+50 m</span></span></div>
+              <div class="row"><span class="ts">May 18 16:02</span><span class="pill">production</span><span><span class="strong">Cotton wick</span> <span class="sub">−8 each</span></span></div>
+              <div class="row"><span class="ts">May 17 14:11</span><span class="pill">adjustment</span><span><span class="strong">Beeswax pool</span> <span class="sub">+£180</span></span></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== DESIGN 6: Slate ================================== -->
+  <section class="gallery-section">
+    <div class="meta">
+      <span class="tag dark">Dark</span>
+      <h2>6. Slate</h2>
+      <span class="desc">Modern corporate dark — slate background, sky-blue accent. Linear/Vercel dark mode feel.</span>
+    </div>
+    <div class="frame">
+      <div class="d6">
+        <aside class="sidebar">
+          <div class="brand">Craft ERP</div>
+          <a class="nav-item active">Dashboard</a>
+          <a class="nav-item">Components</a>
+          <a class="nav-item">Products</a>
+          <a class="nav-item">Make a batch</a>
+          <a class="nav-item">Stock log</a>
+          <a class="nav-item">Settings</a>
+        </aside>
+        <main class="content">
+          <h1>Dashboard</h1>
+          <p class="subtitle">Overview as of Tuesday, 21 May</p>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-label">Total stock value</div><div class="kpi-value">£487.50</div><div class="kpi-sub">components £213.40 · finished £274.10</div></div>
+            <div class="kpi"><div class="kpi-label">Components</div><div class="kpi-value">24</div><div class="kpi-sub">18 measured · 6 cost-pool</div></div>
+            <div class="kpi"><div class="kpi-label">Finished goods</div><div class="kpi-value">47</div><div class="kpi-sub">across 9 variants</div></div>
+            <div class="kpi"><div class="kpi-label">Potential revenue</div><div class="kpi-value">£1,235.00</div><div class="kpi-sub">62% margin if all sells</div></div>
+            <div class="kpi"><div class="kpi-label">Batches produced</div><div class="kpi-value">18</div><div class="kpi-sub">3 this month</div></div>
+            <div class="kpi"><div class="kpi-label">Revenue at target</div><div class="kpi-value">£3,420.00</div><div class="kpi-sub">£2,118 profit · 62% margin</div></div>
+          </div>
+          <div class="panel" style="margin-bottom: 1rem;">
+            <h2>Shopping list · <span style="font-weight: 400; color: var(--muted);">est. spend</span> £24.66</h2>
+            <div class="row"><span><span class="strong">Biothane</span> <span class="sub">Black · 20mm · m</span></span><span>Buy 23.5 m</span><span class="right strong">£14.10</span></div>
+            <div class="row"><span><span class="strong">Solid brass rivets</span> <span class="sub">8mm · each</span></span><span>Buy 64 <span class="sub">(1 × 100 pack)</span></span><span class="right strong">£8.96</span></div>
+            <div class="row"><span><span class="strong">Cotton wick</span> <span class="sub">200mm · each</span></span><span>Buy 8</span><span class="right strong">£1.60</span></div>
+          </div>
+          <div class="panels">
+            <div class="panel">
+              <h2>Stock vs target</h2>
+              <div class="row"><span><span class="dot needed"></span><span class="strong">Wrist restraint — Black M</span></span><span class="strong" style="color: var(--danger)">Make 8</span><span class="right sub">2 / 10</span></div>
+              <div class="row"><span><span class="dot low"></span><span class="strong">Hex Wallet — Tan</span></span><span class="strong" style="color: var(--warn)">Make 3</span><span class="right sub">4 / 7</span></div>
+              <div class="row"><span><span class="dot ok"></span><span class="strong">Beeswax candle — Vanilla</span></span><span class="strong" style="color: var(--success)">OK</span><span class="right sub">12 / 10</span></div>
+            </div>
+            <div class="panel">
+              <h2>Recent movements</h2>
+              <div class="row"><span class="ts">May 19 09:23</span><span class="pill">purchase</span><span><span class="strong">Biothane Black</span> <span class="sub">+50 m</span></span></div>
+              <div class="row"><span class="ts">May 18 16:02</span><span class="pill">production</span><span><span class="strong">Cotton wick</span> <span class="sub">−8 each</span></span></div>
+              <div class="row"><span class="ts">May 17 14:11</span><span class="pill">adjustment</span><span><span class="strong">Beeswax pool</span> <span class="sub">+£180</span></span></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

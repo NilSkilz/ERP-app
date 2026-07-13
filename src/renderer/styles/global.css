@@ -1,0 +1,110 @@
+@import 'primeicons/primeicons.css';
+@import 'primeflex/primeflex.css';
+
+/* ============================================================
+   Studio theme — true black + neon lime + monospace numbers.
+   Engaged via the `dark` class on <html> (see main.ts).
+   PrimeNG Aura's dark variables are overridden so the whole
+   component library inherits the palette automatically.
+   ============================================================ */
+:root,
+.dark {
+  /* Surfaces */
+  --p-surface-0: #131313;
+  --p-surface-50: #161616;
+  --p-surface-100: #1a1a1a;
+  --p-surface-200: #1f1f1f;
+  --p-surface-300: #262626;
+  --p-surface-400: #404040;
+  --p-surface-500: #525252;
+  --p-surface-600: #737373;
+  --p-surface-700: #a3a3a3;
+  --p-surface-800: #d4d4d4;
+  --p-surface-900: #e5e5e5;
+  --p-surface-950: #fafafa;
+
+  /* Text */
+  --p-text-color: #f5f5f5;
+  --p-text-muted-color: #888888;
+
+  /* Primary (lime) */
+  --p-primary-color: #84cc16;
+  --p-primary-50: #f7fee7;
+  --p-primary-100: #ecfccb;
+  --p-primary-200: #d9f99d;
+  --p-primary-300: #bef264;
+  --p-primary-400: #a3e635;
+  --p-primary-500: #84cc16;
+  --p-primary-600: #65a30d;
+  --p-primary-700: #4d7c0f;
+  --p-primary-800: #3f6212;
+  --p-primary-900: #365314;
+  --p-primary-950: #1a2410;
+  --p-primary-contrast-color: #0a0a0a;
+
+  /* Content + borders */
+  --p-content-background: #131313;
+  --p-content-hover-background: #1a1a1a;
+  --p-content-border-color: #262626;
+  --p-content-color: #f5f5f5;
+
+  /* Status colours */
+  --p-red-500: #f43f5e;
+  --p-red-600: #f43f5e;
+  --p-red-700: #fb7185;
+  --p-amber-500: #facc15;
+  --p-amber-700: #fde047;
+  --p-green-500: #84cc16;
+  --p-green-700: #a3e635;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #0a0a0a;
+  color: #f5f5f5;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+app-root {
+  display: block;
+  height: 100%;
+}
+
+/* Monospace numerics — applied opt-in via the .mono class on values
+   we want to look like display readouts (KPIs, ledger totals). */
+.mono {
+  font-family:
+    ui-monospace,
+    'SF Mono',
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbar — subtle dark to match Studio aesthetic. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}

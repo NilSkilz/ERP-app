@@ -1,0 +1,397 @@
+<div class="page-header">
+  <h1>Components</h1>
+  <p-button label="Add component" icon="pi pi-plus" (onClick)="openCreate()" />
+</div>
+
+<p-table
+  [value]="rows()"
+  [loading]="loading()"
+  dataKey="id"
+  styleClass="p-datatable-sm"
+  [paginator]="true"
+  [rows]="25"
+  [rowsPerPageOptions]="[25, 50, 100]"
+  responsiveLayout="scroll"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
+      <th>SKU</th>
+      <th>Unit</th>
+      <th>Colour</th>
+      <th>Size</th>
+      <th class="text-right">Stock</th>
+      <th class="text-right">Value</th>
+      <th class="text-right">Avg cost</th>
+      <th class="text-right">Reorder</th>
+      <th style="width: 260px;"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td>
+        <div style="font-weight: 600;">{{ row.name }}</div>
+        <div style="display: flex; flex-direction: column; gap: 0.1rem;">
+          @if (row.pack_size) {
+            <small style="color: var(--p-text-muted-color);">
+              Pack of {{ row.pack_size }}
+            </small>
+          }
+          @if (row.notes) {
+            <small style="color: var(--p-text-muted-color);">{{ row.notes }}</small>
+          }
+        </div>
+      </td>
+      <td>{{ row.sku || '—' }}</td>
+      <td><p-tag [value]="row.unit" severity="secondary" /></td>
+      <td>{{ row.colour || '—' }}</td>
+      <td>{{ row.size || '—' }}</td>
+      <td class="text-right">{{ row.stock_quantity | unitQty: row.unit }}</td>
+      <td class="text-right">{{ valueOf(row) | money }}</td>
+      <td class="text-right">
+        @if (row.unit === 'cost_pool') {
+          —
+        } @else {
+          {{ row.cost_per_unit_pence | money }}
+        }
+      </td>
+      <td class="text-right">{{ row.reorder_level | unitQty: row.unit }}</td>
+      <td>
+        <div class="row-actions">
+          <p-button
+            label="Receive"
+            icon="pi pi-download"
+            size="small"
+            severity="secondary"
+            (onClick)="openReceive(row)"
+          />
+          <p-button
+            label="Adjust"
+            icon="pi pi-sliders-h"
+            size="small"
+            severity="secondary"
+            text="true"
+            (onClick)="openAdjust(row)"
+          />
+          @if (row.link) {
+            <a
+              [href]="row.link"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open shop link"
+              class="link-btn"
+            >
+              <i class="pi pi-external-link"></i>
+            </a>
+          }
+          <p-button
+            icon="pi pi-pencil"
+            size="small"
+            severity="secondary"
+            text="true"
+            (onClick)="openEdit(row)"
+          />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr><td colspan="10" style="text-align: center; padding: 2rem;">No components yet. Add one to get going.</td></tr>
+  </ng-template>
+</p-table>
+
+<!-- Create dialog -->
+<p-dialog
+  header="Add component"
+  [(visible)]="createOpen"
+  [modal]="true"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+>
+  <div class="dialog-form">
+    <label>Name
+      <input pInputText [(ngModel)]="createForm().name" />
+    </label>
+    <label>SKU (optional)
+      <input pInputText [(ngModel)]="createForm().sku" />
+    </label>
+    <label>Unit
+      <p-select
+        [options]="UNIT_OPTIONS"
+        [(ngModel)]="createForm().unit"
+        optionLabel="label"
+        optionValue="value"
+        appendTo="body"
+      />
+    </label>
+    <label>Buy link (URL, optional)
+      <input pInputText [(ngModel)]="createForm().link" placeholder="https://…" />
+    </label>
+    <div class="pair">
+      <label>Colour
+        <input pInputText [(ngModel)]="createForm().colour" />
+      </label>
+      <label>Size
+        <input pInputText [(ngModel)]="createForm().size" />
+      </label>
+    </div>
+    @if (createForm().unit !== 'cost_pool') {
+      <label>Pack size (optional)
+        <small style="font-weight: 400; color: var(--p-text-muted-color);">
+          — how many units come in one pack
+        </small>
+        <p-inputNumber
+          [(ngModel)]="createForm().packSize"
+          [min]="1"
+          [step]="1"
+          placeholder="e.g. 100"
+        />
+      </label>
+      <label>Opening stock
+        <p-inputNumber
+          [(ngModel)]="createForm().stockQuantity"
+          mode="decimal"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="3"
+        />
+      </label>
+      <label>Cost per unit (£)
+        <p-inputNumber
+          [(ngModel)]="createForm().costPerUnitPounds"
+          mode="currency"
+          currency="GBP"
+          locale="en-GB"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="4"
+        />
+      </label>
+    } @else {
+      <label>Opening pool value (£)
+        <p-inputNumber
+          [(ngModel)]="createForm().stockValuePounds"
+          mode="currency"
+          currency="GBP"
+          locale="en-GB"
+        />
+      </label>
+    }
+    <label>Reorder level (optional)
+      <p-inputNumber
+        [(ngModel)]="createForm().reorderLevel"
+        mode="decimal"
+        [minFractionDigits]="0"
+        [maxFractionDigits]="3"
+      />
+    </label>
+    <label>Notes
+      <input pInputText [(ngModel)]="createForm().notes" />
+    </label>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" severity="secondary" text="true" (onClick)="createOpen.set(false)" />
+    <p-button label="Create" icon="pi pi-check" (onClick)="submitCreate()" />
+  </ng-template>
+</p-dialog>
+
+<!-- Edit dialog -->
+<p-dialog
+  header="Edit component"
+  [(visible)]="editOpen"
+  [modal]="true"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+>
+  @if (editForm(); as f) {
+    <div class="dialog-form">
+      <label>Name
+        <input pInputText [(ngModel)]="f.name" />
+      </label>
+      <label>SKU
+        <input pInputText [(ngModel)]="f.sku" />
+      </label>
+      <label>Buy link (URL, optional)
+        <input pInputText [(ngModel)]="f.link" placeholder="https://…" />
+      </label>
+      <div class="pair">
+        <label>Colour
+          <input pInputText [(ngModel)]="f.colour" />
+        </label>
+        <label>Size
+          <input pInputText [(ngModel)]="f.size" />
+        </label>
+      </div>
+      @if (f.unit !== 'cost_pool') {
+        <label>Pack size (optional)
+          <p-inputNumber
+            [(ngModel)]="f.packSize"
+            [min]="1"
+            [step]="1"
+            placeholder="e.g. 100"
+          />
+        </label>
+      }
+      <div class="pair">
+        <label>Unit
+          <p-select
+            [options]="UNIT_OPTIONS"
+            [(ngModel)]="f.unit"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </label>
+        @if (f.unit !== 'cost_pool') {
+          <label>Cost per unit (£)
+            <p-inputNumber
+              [(ngModel)]="f.costPerUnitPounds"
+              mode="currency"
+              currency="GBP"
+              locale="en-GB"
+              [minFractionDigits]="2"
+              [maxFractionDigits]="4"
+            />
+          </label>
+        }
+      </div>
+      @if (f.unit !== f.originalUnit) {
+        @if (unitChangeIsConversion(f)) {
+          <small style="color: var(--p-amber-700, #b45309);">
+            Stock and cost will be auto-scaled between {{ f.originalUnit }} and {{ f.unit }}.
+          </small>
+        } @else {
+          <small style="color: var(--p-red-600, #dc2626);">
+            Changing to an incompatible unit will reset stock fields. Recipes that
+            reference this component may need to be updated.
+          </small>
+        }
+      }
+      <label>Reorder level
+        <p-inputNumber
+          [(ngModel)]="f.reorderLevel"
+          mode="decimal"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="3"
+        />
+      </label>
+      <label>Notes
+        <input pInputText [(ngModel)]="f.notes" />
+      </label>
+    </div>
+  }
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" severity="secondary" text="true" (onClick)="editOpen.set(false)" />
+    <p-button label="Save" icon="pi pi-check" (onClick)="submitEdit()" />
+  </ng-template>
+</p-dialog>
+
+<!-- Adjust stock dialog -->
+<p-dialog
+  header="Adjust stock"
+  [(visible)]="adjustOpen"
+  [modal]="true"
+  [style]="{ width: '440px' }"
+  [draggable]="false"
+>
+  @if (adjustForm(); as f) {
+    <div class="dialog-form">
+      <div>Adjusting <strong>{{ f.name }}</strong> ({{ f.unit }})</div>
+      @if (adjustingMeasured()) {
+        <div style="color: var(--p-text-muted-color); font-size: 0.85rem;">
+          Current stock: {{ f.currentStockQuantity ?? 0 }} {{ f.unit === 'each' ? '' : f.unit }}
+        </div>
+        <label>New stock quantity
+          <p-inputNumber
+            [(ngModel)]="f.newStockQuantity"
+            mode="decimal"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="3"
+          />
+        </label>
+      } @else {
+        <div style="color: var(--p-text-muted-color); font-size: 0.85rem;">
+          Current pool value: £{{ (f.currentStockValuePounds ?? 0).toFixed(2) }}
+        </div>
+        <label>New pool value (£)
+          <p-inputNumber
+            [(ngModel)]="f.newStockValuePounds"
+            mode="currency"
+            currency="GBP"
+            locale="en-GB"
+          />
+        </label>
+      }
+      <label>Reason
+        <p-select
+          [options]="REASON_OPTIONS"
+          [(ngModel)]="f.reason"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+        />
+      </label>
+      <label>Notes (optional)
+        <input pInputText [(ngModel)]="f.notes" placeholder="e.g. recount after move" />
+      </label>
+      <small style="color: var(--p-text-muted-color);">
+        This writes an audit entry to the stock log — it doesn't change cost-per-unit.
+      </small>
+    </div>
+  }
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" severity="secondary" text="true" (onClick)="adjustOpen.set(false)" />
+    <p-button label="Save adjustment" icon="pi pi-check" (onClick)="submitAdjust()" />
+  </ng-template>
+</p-dialog>
+
+<!-- Receive stock dialog -->
+<p-dialog
+  header="Receive stock"
+  [(visible)]="receiveOpen"
+  [modal]="true"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+>
+  @if (receiveForm(); as f) {
+    <div class="dialog-form">
+      <div>Receiving stock of <strong>{{ f.name }}</strong> ({{ f.unit }})</div>
+      @if (receivingMeasured()) {
+        @if (f.packSize) {
+          <label>Number of packs
+            <small style="font-weight: 400; color: var(--p-text-muted-color);">
+              — fills quantity below ({{ f.packSize }} per pack)
+            </small>
+            <p-inputNumber
+              [(ngModel)]="f.packs"
+              (ngModelChange)="onPacksChange()"
+              [min]="0"
+              [step]="1"
+            />
+          </label>
+        }
+        <label>Quantity
+          <p-inputNumber
+            [(ngModel)]="f.quantity"
+            mode="decimal"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="3"
+          />
+        </label>
+      }
+      <label>Total cost paid (£)
+        <p-inputNumber
+          [(ngModel)]="f.totalCostPounds"
+          mode="currency"
+          currency="GBP"
+          locale="en-GB"
+        />
+      </label>
+      <label>Notes
+        <input pInputText [(ngModel)]="f.notes" />
+      </label>
+    </div>
+  }
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" severity="secondary" text="true" (onClick)="receiveOpen.set(false)" />
+    <p-button label="Receive" icon="pi pi-download" (onClick)="submitReceive()" />
+  </ng-template>
+</p-dialog>

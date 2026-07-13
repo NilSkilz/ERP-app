@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1779128107533,
+      "tag": "0000_pale_thanos",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1779130867797,
+      "tag": "0001_stiff_azazel",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1779203794697,
+      "tag": "0002_sweet_genesis",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1779357566616,
+      "tag": "0003_outgoing_pyro",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1779386652267,
+      "tag": "0004_fluffy_mole_man",
+      "breakpoints": true
+    }
+  ]
+}

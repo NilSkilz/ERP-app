@@ -1,0 +1,106 @@
+<h1>Make a batch</h1>
+
+<div class="controls">
+  <label>Variant
+    <p-select
+      [options]="variantOptions()"
+      [ngModel]="selectedVariantId()"
+      (ngModelChange)="selectedVariantId.set($event); refreshPreview()"
+      optionLabel="label"
+      optionValue="value"
+      [filter]="true"
+      filterBy="label"
+      placeholder="Pick a variant…"
+      appendTo="body"
+    />
+  </label>
+  <label>Quantity
+    <p-inputNumber
+      [ngModel]="quantity()"
+      (ngModelChange)="quantity.set($event); refreshPreview()"
+      [min]="1"
+      [step]="1"
+      showButtons="true"
+    />
+  </label>
+  <p-button
+    label="Preview"
+    icon="pi pi-eye"
+    severity="secondary"
+    (onClick)="refreshPreview()"
+  />
+</div>
+
+@if (preview(); as p) {
+  <div class="summary">
+    <div>
+      <label>Unit cost</label>
+      <strong>{{ p.unitCostPence | money }}</strong>
+    </div>
+    <div>
+      <label>Total cost</label>
+      <strong>{{ p.totalCostPence | money }}</strong>
+    </div>
+    <div>
+      <label>Quantity</label>
+      <strong>{{ p.quantity }}</strong>
+    </div>
+    @if (hasWarnings()) {
+      <div>
+        <label>Warnings</label>
+        <strong class="warning">{{ p.warnings.length }} components go negative</strong>
+      </div>
+    }
+  </div>
+
+  <h2 style="font-size: 1rem; margin: 0 0 0.5rem;">Will consume</h2>
+  <p-table [value]="p.rows" styleClass="p-datatable-sm">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Component</th>
+        <th class="text-right">Consumed</th>
+        <th class="text-right">Cost</th>
+        <th class="text-right">New stock</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+      <tr [class.warning]="row.isNegative">
+        <td>{{ row.componentName }}</td>
+        <td class="text-right">
+          @if (row.unit === 'cost_pool') {
+            —
+          } @else {
+            {{ row.quantityConsumed | unitQty: row.unit }}
+          }
+        </td>
+        <td class="text-right">{{ row.valueConsumedPence | money }}</td>
+        <td class="text-right">
+          @if (row.unit === 'cost_pool') {
+            {{ row.newStockValuePence | money }}
+          } @else {
+            {{ row.newStockQuantity | unitQty: row.unit }}
+          }
+        </td>
+        <td>
+          @if (row.isNegative) {
+            <p-tag severity="danger" value="negative" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div style="margin-top: 1rem; display: flex; gap: 0.5rem; align-items: end; max-width: 720px;">
+    <label style="flex: 1; display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; font-weight: 500;">
+      Notes
+      <input pInputText [ngModel]="notes()" (ngModelChange)="notes.set($event)" />
+    </label>
+    <p-button
+      label="Make batch"
+      icon="pi pi-check"
+      [loading]="making()"
+      (onClick)="makeIt()"
+    />
+  </div>
+}
