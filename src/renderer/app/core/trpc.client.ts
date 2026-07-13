@@ -46,14 +46,21 @@ const ipcLink: TRPCLink<AppRouter> = () => {
     });
 };
 
-// HTTP link — for phones/laptops over the LAN. Built off the current window
-// location so iPhones reach the Mac's IP automatically.
+// HTTP link — for browsers. Same-origin when the page is served by the app's
+// own web server (headless hosting, possibly behind a reverse proxy /
+// subdomain, where the port is NOT 7273 from the browser's point of view).
+// Only the Vite dev server needs the cross-port hop to the API on 7273.
+function apiBaseUrl(): string {
+  if (typeof window === 'undefined' || !window.location?.hostname) {
+    return 'http://localhost:7273';
+  }
+  const { protocol, hostname, port, host } = window.location;
+  if (port === '5173') return `http://${hostname}:7273`; // electron-vite dev
+  return `${protocol}//${host}`;
+}
+
 function httpApiUrl(): string {
-  const host =
-    typeof window !== 'undefined' && window.location?.hostname
-      ? window.location.hostname
-      : 'localhost';
-  return `http://${host}:7273/api/trpc`;
+  return `${apiBaseUrl()}/api/trpc`;
 }
 
 export const trpc = createTRPCProxyClient<AppRouter>({
@@ -72,14 +79,10 @@ export const trpc = createTRPCProxyClient<AppRouter>({
 
 // Convenience helper for building asset URLs that work in both modes:
 //   electron : craft-asset:///<storage_path>
-//   browser  : http://<host>:7273/assets/<storage_path>
+//   browser  : <api base>/assets/<storage_path>
 export function assetUrl(storagePath: string): string {
   if (isElectron) return `craft-asset:///${storagePath}`;
-  const host =
-    typeof window !== 'undefined' && window.location?.hostname
-      ? window.location.hostname
-      : 'localhost';
-  return `http://${host}:7273/assets/${storagePath}`;
+  return `${apiBaseUrl()}/assets/${storagePath}`;
 }
 
 export type TrpcClient = typeof trpc;
