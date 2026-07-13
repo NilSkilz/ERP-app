@@ -1,10 +1,10 @@
-import { app } from 'electron';
 import { join, extname, sep } from 'node:path';
 import { mkdir, writeFile, unlink } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { asc, eq } from 'drizzle-orm';
 import type { Db, DbLike } from '../db/client.js';
 import { variantAttachments } from '../db/schema.js';
+import { assetsDir } from '../paths.js';
 
 export interface AttachmentInput {
   variantId: number;
@@ -12,10 +12,6 @@ export interface AttachmentInput {
   mimeType: string;
   data: Uint8Array;
   caption?: string | null;
-}
-
-export function assetsDir(): string {
-  return join(app.getPath('userData'), 'assets');
 }
 
 // Some OSes return empty `file.type` for SVG (and a few other formats), so

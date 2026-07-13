@@ -27,7 +27,9 @@
   "include": [
     "src/main/**/*.ts",
     "src/preload/**/*.ts",
+    "src/server/**/*.ts",
     "electron.vite.config.ts",
+    "vite.server.config.ts",
     "drizzle.config.ts",
     "vitest.config.ts"
   ]

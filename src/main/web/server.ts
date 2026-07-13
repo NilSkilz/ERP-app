@@ -25,14 +25,33 @@ const MIME_BY_EXT: Record<string, string> = {
   '.bmp': 'image/bmp',
   '.avif': 'image/avif',
   '.pdf': 'application/pdf',
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript',
+  '.mjs': 'text/javascript',
+  '.css': 'text/css',
+  '.json': 'application/json',
+  '.map': 'application/json',
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf',
 };
+
+export interface WebServerOptions {
+  apiPort?: number;
+  rendererPort?: number;
+  // When set, the built renderer (electron-vite's out/renderer) is served
+  // from the API port itself — the headless/LXC mode. When unset (Electron
+  // dev), Vite serves the renderer on its own port and we only host the API.
+  rendererDist?: string;
+}
 
 export function startWebServer(
   db: Db,
   assetsRoot: string,
-  apiPort = 7273,
-  rendererPort = 5173
+  options: WebServerOptions = {}
 ): Promise<WebServerInfo> {
+  const { apiPort = 7273, rendererPort = 5173, rendererDist } = options;
   const trpcHandler = createHTTPHandler({
     router: appRouter,
     createContext: () => createContext(db),
@@ -56,8 +75,12 @@ export function startWebServer(
       return trpcHandler(req, res);
     }
 
-    // Asset files (variant attachments etc).
+    // Both the renderer's hashed bundles and variant attachments live under
+    // /assets/ (renderer: /assets/index-<hash>.js, attachments:
+    // /assets/variants/<id>/<file>). Prefer an exact renderer file, then
+    // fall back to the attachment store.
     if (url.startsWith('/assets/')) {
+      if (rendererDist && (await tryServeFile(res, rendererDist, url))) return;
       return serveAsset(req, res, assetsRoot, url);
     }
 
@@ -68,9 +91,15 @@ export function startWebServer(
       return;
     }
 
-    // For dev we don't serve the renderer here — Vite handles that on its own
-    // host:port. In a packaged build we'd add static-file serving for the
-    // electron-vite renderer output.
+    // Headless mode: serve the built renderer from this same port. The app
+    // uses a hash router, so anything that isn't a real static file gets the
+    // SPA shell.
+    if (rendererDist && req.method === 'GET') {
+      if (await tryServeFile(res, rendererDist, url)) return;
+      if (await tryServeFile(res, rendererDist, '/index.html')) return;
+    }
+
+    // Electron dev: Vite serves the renderer on its own host:port.
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not found');
   });
@@ -81,10 +110,39 @@ export function startWebServer(
       resolve({
         apiPort,
         rendererPort,
-        urls: enumerateUrls(rendererPort),
+        urls: enumerateUrls(rendererDist ? apiPort : rendererPort),
       });
     });
   });
+}
+
+// Serve `url` as a static file under `root`. Returns false — with nothing
+// written to the response — when the path escapes root or isn't a file, so
+// the caller can try the next candidate.
+async function tryServeFile(res: ServerResponse, root: string, url: string): Promise<boolean> {
+  const pathname = decodeURIComponent(url.split('?')[0].split('#')[0]);
+  const absolute = join(root, pathname.replace(/^\/+/, ''));
+  const safePrefix = root + sep;
+  if (!absolute.startsWith(safePrefix)) return false;
+  const s = await stat(absolute).catch(() => null);
+  if (!s || !s.isFile()) return false;
+  try {
+    const data = await readFile(absolute);
+    const ext = extname(absolute).toLowerCase();
+    res.writeHead(200, {
+      'Content-Type': MIME_BY_EXT[ext] ?? 'application/octet-stream',
+      'Content-Length': data.byteLength.toString(),
+      // Renderer bundles carry content hashes in their names so they can
+      // cache; the HTML shell must always revalidate.
+      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=86400',
+    });
+    res.end(data);
+  } catch (err) {
+    console.error(`[web] static read failed for ${absolute}:`, err);
+    res.writeHead(500);
+    res.end('Internal error');
+  }
+  return true;
 }
 
 function setCors(res: ServerResponse): void {
@@ -96,7 +154,7 @@ function setCors(res: ServerResponse): void {
 }
 
 async function serveAsset(
-  req: IncomingMessage,
+  _req: IncomingMessage,
   res: ServerResponse,
   assetsRoot: string,
   url: string

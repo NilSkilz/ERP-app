@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { app } from 'electron';
 import { UNITS } from '../../shared/units.js';
+import { dbPath } from '../paths.js';
+import { getWebServerInfo } from '../web/info.js';
 import {
   adjustComponentStock,
   createComponent,
@@ -278,16 +279,15 @@ const stockMovementsRouter = router({
 const systemRouter = router({
   ping: publicProcedure.query(() => ({
     ok: true as const,
-    dbPath: `${app.getPath('userData')}/craft.db`,
+    dbPath: dbPath(),
     now: new Date(),
   })),
-  webAccess: publicProcedure.query(async () => {
-    // Lazy import so the renderer's type chain doesn't pull electron in.
-    const main = await import('../index.js');
+  webAccess: publicProcedure.query(() => {
+    const info = getWebServerInfo();
     return {
-      urls: main.webServerInfo?.urls ?? [],
-      apiPort: main.webServerInfo?.apiPort ?? null,
-      rendererPort: main.webServerInfo?.rendererPort ?? null,
+      urls: info?.urls ?? [],
+      apiPort: info?.apiPort ?? null,
+      rendererPort: info?.rendererPort ?? null,
     };
   }),
 });

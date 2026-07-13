@@ -6,9 +6,9 @@ import { readFile } from 'node:fs/promises';
 import { openDatabase } from './db/client.js';
 import { runMigrations } from './db/migrate.js';
 import { attachIpcRouter } from './ipc/server.js';
-import { startWebServer, type WebServerInfo } from './web/server.js';
-
-export let webServerInfo: WebServerInfo | null = null;
+import { setDataDir, dbPath, assetsDir } from './paths.js';
+import { setWebServerInfo } from './web/info.js';
+import { startWebServer } from './web/server.js';
 
 // Custom protocol used by the renderer to load variant attachment images
 // without having to base64-encode them through every render. Privileged
@@ -74,12 +74,10 @@ async function loadRenderer(window: BrowserWindow): Promise<void> {
 }
 
 app.whenReady().then(async () => {
-  const userData = app.getPath('userData');
-  if (!existsSync(userData)) mkdirSync(userData, { recursive: true });
-  const dbPath = join(userData, 'craft.db');
-  const assetsRoot = join(userData, 'assets');
+  setDataDir(app.getPath('userData'));
+  const assetsRoot = assetsDir();
   if (!existsSync(assetsRoot)) mkdirSync(assetsRoot, { recursive: true });
-  console.log(`[main] opening DB at ${dbPath}`);
+  console.log(`[main] opening DB at ${dbPath()}`);
 
   // Resolve craft-asset:///variants/<id>/<file> -> file under userData/assets.
   // Reading via fs instead of net.fetch sidesteps ERR_FILE_NOT_FOUND quirks
@@ -132,13 +130,14 @@ app.whenReady().then(async () => {
     }
   });
 
-  const db = openDatabase(dbPath);
+  const db = openDatabase(dbPath());
   runMigrations(db, resolveMigrationsFolder());
 
   // Start the local HTTP server so a phone/laptop on the same Wi-Fi can hit
   // the same data. Permissive CORS — trusted networks only.
   try {
-    webServerInfo = await startWebServer(db, assetsRoot);
+    const webServerInfo = await startWebServer(db, assetsRoot);
+    setWebServerInfo(webServerInfo);
     console.log(`[web] listening on ${webServerInfo.urls.join(', ')}`);
   } catch (err) {
     console.error('[web] failed to start:', err);

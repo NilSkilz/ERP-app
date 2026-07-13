@@ -11,6 +11,7 @@
     "rebuild": "electron-builder install-app-deps",
     "dev": "electron-vite dev",
     "build": "electron-vite build",
+    "build:server": "vite build --config vite.server.config.ts",
     "start": "electron-vite preview",
     "package": "npm run build && electron-builder",
     "package:mac": "npm run build && electron-builder --mac",
